@@ -18,8 +18,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using Path = System.IO.Path;
+using System.Reflection;
+using System.Media;
 
-namespace MediaPlayer
+namespace MediaPlayerNameSpace
 {
     /// <summary>
     /// Interaction logic for MyMusicUserControl.xaml
@@ -33,9 +35,9 @@ namespace MediaPlayer
 
 		public class Object : INotifyPropertyChanged
 		{
-			public string name;
-			public string dir;
-			public string extension;
+			private string name;
+			private string dir;
+			private string extension;
 			public string Name
 			{
 				get => name; set
@@ -67,6 +69,9 @@ namespace MediaPlayer
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+
+		MediaPlayer _mediaPlayer = new MediaPlayer();
+		private bool _playing = false;
 
 		ObservableCollection<Object> Objects = new ObservableCollection<Object>();
 
@@ -100,5 +105,32 @@ namespace MediaPlayer
 
 		}
 
-	}
+
+        private void playButton_Click(object sender, RoutedEventArgs e)
+        {
+			if (_playing)
+			{
+				_mediaPlayer.Pause();
+				_playing = false;
+                playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+            }
+			else
+			{
+				
+				if (musicListView.SelectedItem != null && _mediaPlayer.Source == null)
+				{
+					Object play = (Object)musicListView.SelectedItem;
+					_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+                }
+
+				if (_mediaPlayer.Source != null)
+				{
+                    _mediaPlayer.Play();
+                    _playing = true;
+                    playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
+
+                }
+            }
+        }
+    }
 }

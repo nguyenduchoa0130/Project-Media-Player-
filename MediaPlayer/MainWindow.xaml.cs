@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
 
-namespace MediaPlayer
+namespace MediaPlayerNameSpace
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
