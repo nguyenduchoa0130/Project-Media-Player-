@@ -29,11 +29,13 @@
 		</ListView>
 		<StackPanel Grid.Row="2">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-				<Button
+                <Button
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignIconButton}"
-							ToolTip="MaterialDesignIconButton">
-					<materialDesign:PackIcon Kind="SkipPrevious" />
+							ToolTip="MaterialDesignIconButton"
+							Name ="skipPreviousButton"
+							Click="skipPreviousButton_Click">
+                    <materialDesign:PackIcon Kind="SkipPrevious" />
 				</Button>
 				<Button
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
@@ -46,11 +48,13 @@
 								Height="24"
 								Kind="Play" />
 				</Button>
-				<Button
+                <Button
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignIconButton}"
-							ToolTip="MaterialDesignIconButton">
-					<materialDesign:PackIcon Kind="SkipNext" />
+							ToolTip="MaterialDesignIconButton"
+							Name="skipNextButton"
+							Click="skipNextButton_Click">
+                    <materialDesign:PackIcon Kind="SkipNext" />
 				</Button>
 			</StackPanel>
 			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">

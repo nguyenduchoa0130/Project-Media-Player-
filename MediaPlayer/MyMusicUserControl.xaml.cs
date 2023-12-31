@@ -31,13 +31,15 @@ namespace MediaPlayerNameSpace
         public MyMusicUserControl()
         {
             InitializeComponent();
+            skipNextButton.IsEnabled = false;
+			skipPreviousButton.IsEnabled = false;
         }
 
 		public class Object : INotifyPropertyChanged
 		{
-			private string name;
-			private string dir;
-			private string extension;
+			private string name = "";
+			private string dir = "";
+			private string extension = "";
 			public string Name
 			{
 				get => name; set
@@ -62,7 +64,7 @@ namespace MediaPlayerNameSpace
 					RaiseEvent();
 				}
 			}
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event PropertyChangedEventHandler? PropertyChanged;
 
 			void RaiseEvent([CallerMemberName] string propertyName = "")
 			{
@@ -121,6 +123,16 @@ namespace MediaPlayerNameSpace
 				{
 					Object play = (Object)musicListView.SelectedItem;
 					_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+					
+					if (musicListView.SelectedIndex < Objects.Count - 1)
+					{
+                        skipNextButton.IsEnabled = true;
+					}
+
+					if (musicListView.SelectedIndex > 0)
+					{
+						skipPreviousButton.IsEnabled = true;
+					}
                 }
 
 				if (_mediaPlayer.Source != null)
@@ -129,6 +141,54 @@ namespace MediaPlayerNameSpace
                     _playing = true;
                     playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
 
+                }
+            }
+        }
+
+        private void skipNextButton_Click(object sender, RoutedEventArgs e)
+        {
+			int index = musicListView.SelectedIndex;
+			if (index < Objects.Count - 1)
+			{
+				musicListView.SelectedIndex += 1;
+				index += 1;
+
+				if (index == Objects.Count - 1) 
+				{
+					skipNextButton.IsEnabled = false;
+				}
+
+                Object play = Objects[index];
+                _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				skipPreviousButton.IsEnabled |= true;
+
+                if (_playing)
+                {
+                    _mediaPlayer.Play();
+                }
+            }
+        }
+
+        private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
+        {
+			int index = musicListView.SelectedIndex;
+			if (index > 0)
+			{
+                musicListView.SelectedIndex -= 1;
+				index -= 1;
+
+                if (index == 0)
+                {
+                    skipPreviousButton.IsEnabled = false;
+                }
+
+                Object play = Objects[index];
+                _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				skipNextButton.IsEnabled |= true;
+
+				if (_playing)
+				{
+                    _mediaPlayer.Play();
                 }
             }
         }
