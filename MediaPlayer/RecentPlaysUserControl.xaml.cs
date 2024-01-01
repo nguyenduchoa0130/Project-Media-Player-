@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using Path = System.IO.Path;
+using System.Reflection;
+using System.Media;
 
 namespace MediaPlayerNameSpace
 {
@@ -23,6 +27,38 @@ namespace MediaPlayerNameSpace
         public RecentPlaysUserControl()
         {
             InitializeComponent();
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (string line in File.ReadAllLines(@"D:\Nam4\Window\Project2\MediaPlayer\RecentPlays\recentPlaysList.txt"))
+            {
+                recentPlaysListView.Items.Add(line);
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            recentPlaysListView.Items.RemoveAt(recentPlaysListView.Items.IndexOf(recentPlaysListView.SelectedItem));
+        }
+
+        private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void playButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void skipNextButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void musicListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

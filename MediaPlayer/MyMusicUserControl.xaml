@@ -36,43 +36,79 @@
                 <Button
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignIconButton}"
+							ToolTip="Shuffle"
+                        
+							Background="Transparent"
+                            x:Name="shuffleButton"
+							Click="shuffleButton_Click">
+                        <materialDesign:PackIcon 
+                            x:Name="shuffleIcon"
+                            Kind="Shuffle" />
+                    </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+							Style="{StaticResource MaterialDesignIconButton}"
 							ToolTip="MaterialDesignIconButton"
-							Name ="skipPreviousButton"
+							x:Name ="skipPreviousButton"
 							Click="skipPreviousButton_Click">
-                    <materialDesign:PackIcon Kind="SkipPrevious" />
-				</Button>
-				<Button
-							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        <materialDesign:PackIcon Kind="SkipPrevious" />
+                    </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 							Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
 							ToolTip="MaterialDesignFloatingActionMiniLightButton" Margin="8"
-							Name="playButton"
+                            x:Name="playButton"
 							Click="playButton_Click">
-					<materialDesign:PackIcon
-								Name="playIcon"
+                        <materialDesign:PackIcon
+								x:Name="playIcon"
 								Width="24"
 								Height="24"
 								Kind="Play" />
-				</Button>
-                <Button
-							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 							Style="{StaticResource MaterialDesignIconButton}"
 							ToolTip="MaterialDesignIconButton"
-							Name="skipNextButton"
+							x:Name="skipNextButton"
 							Click="skipNextButton_Click">
-                    <materialDesign:PackIcon Kind="SkipNext" />
-				</Button>
-			</StackPanel>
-			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Name="currentPosition" Text="0:00" Margin="0, 0, 10, 0"/>
-				<Slider
+                        <materialDesign:PackIcon Kind="SkipNext" />
+                    </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+							Style="{StaticResource MaterialDesignIconButton}"
+							ToolTip="Playback"
+                            Background="Transparent"
+							x:Name ="repeatButton"
+							Click="repeatButton_Click">
+                        <materialDesign:PackIcon
+                            x:Name="repeatIcon"
+                            Kind="RepeatOne" />
+                    </Button>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Name="currentPosition" Text="0:00" Margin="0, 0, 10, 0"/>
+                    <Slider
 							Name="progressSlider"
 							Maximum="100"
 							Minimum="0"
 							Value="0" Width="400"
 							ValueChanged="progressSlider_ValueChanged"/>
-                
-                <TextBlock Name="totalPosition" Text="10:00" Margin="10, 0, 0, 0"/>
-			</StackPanel>
-		</StackPanel>
-	</Grid>
+                    <TextBlock Name="totalPosition" Text="10:00" Margin="10, 0, 0, 0"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <!--<Grid Grid.Row="2" Margin="489,0,0,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+							Style="{StaticResource MaterialDesignIconButton}"
+							ToolTip="MaterialDesignIconButton"
+							Name="savePlayListButton"
+							Click="savePlayListButton_Click">
+                    <materialDesign:PackIcon Kind="ContentSave" />
+                </Button>
+                <TextBlock Width="130"> Save PlayList</TextBlock>
+            </StackPanel>
+        </Grid>-->
+    </Grid>
 </UserControl>
