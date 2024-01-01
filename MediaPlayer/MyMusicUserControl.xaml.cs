@@ -20,6 +20,8 @@ using System.IO;
 using Path = System.IO.Path;
 using System.Reflection;
 using System.Media;
+using System.Windows.Threading;
+using System.Security;
 
 namespace MediaPlayerNameSpace
 {
@@ -28,11 +30,17 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class MyMusicUserControl : UserControl
     {
+
+		private void init()
+		{
+            skipNextButton.IsEnabled = false;
+            skipPreviousButton.IsEnabled = false;
+            playButton.IsEnabled = false;
+        }
         public MyMusicUserControl()
         {
             InitializeComponent();
-            skipNextButton.IsEnabled = false;
-			skipPreviousButton.IsEnabled = false;
+            init();
         }
 
 		public class Object : INotifyPropertyChanged
@@ -72,8 +80,9 @@ namespace MediaPlayerNameSpace
 			}
 		}
 
-		MediaPlayer _mediaPlayer = new MediaPlayer();
+		public MediaPlayer _mediaPlayer = new MediaPlayer();
 		private bool _playing = false;
+		DispatcherTimer? _timer;
 
 		ObservableCollection<Object> Objects = new ObservableCollection<Object>();
 
@@ -105,6 +114,7 @@ namespace MediaPlayerNameSpace
 				}
 			}
 
+			playButton.IsEnabled = true;
 		}
 
 
@@ -115,6 +125,8 @@ namespace MediaPlayerNameSpace
 				_mediaPlayer.Pause();
 				_playing = false;
                 playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+
+				_timer?.Stop();
             }
 			else
 			{
@@ -123,27 +135,67 @@ namespace MediaPlayerNameSpace
 				{
 					Object play = (Object)musicListView.SelectedItem;
 					_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
-					
-					if (musicListView.SelectedIndex < Objects.Count - 1)
-					{
-                        skipNextButton.IsEnabled = true;
-					}
-
-					if (musicListView.SelectedIndex > 0)
-					{
-						skipPreviousButton.IsEnabled = true;
-					}
                 }
 
-				if (_mediaPlayer.Source != null)
+                updateSkipButton();
+
+                if (_mediaPlayer.Source != null)
 				{
+					while (!_mediaPlayer.NaturalDuration.HasTimeSpan) { } // Đợi có timespan rồi chạy tiếp
+
+					if (_mediaPlayer.NaturalDuration.HasTimeSpan)
+						{
+						int hours = _mediaPlayer.NaturalDuration.TimeSpan.Hours;
+                        int minutes = _mediaPlayer.NaturalDuration.TimeSpan.Minutes;
+                        int seconds = _mediaPlayer.NaturalDuration.TimeSpan.Seconds;
+
+                        if (hours == 0)
+                        {
+                            totalPosition.Text = $"{minutes}:{seconds}";
+                        }
+                        else
+                        {
+                            totalPosition.Text = $"{hours}:{minutes}:{seconds}";
+                        }
+
+                        progressSlider.Maximum = _mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+                    }
+
                     _mediaPlayer.Play();
                     _playing = true;
                     playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
 
+					_timer = new DispatcherTimer();
+					_timer.Tick += _timer_Tick;
+					_timer.Start();
+
                 }
             }
         }
+
+        private void _timer_Tick(object? sender, EventArgs e)
+        {
+			int hours = _mediaPlayer.Position.Hours;
+			int minutes = _mediaPlayer.Position.Minutes;
+			int seconds = _mediaPlayer.Position.Seconds;
+
+			if (hours == 0)
+			{
+				currentPosition.Text = $"{minutes}:{seconds}";
+			}
+			else
+			{
+				currentPosition.Text = $"{hours}:{minutes}:{seconds}";
+			}
+
+			//progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
+
+			if (_mediaPlayer.NaturalDuration.HasTimeSpan)
+			{
+				progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
+			}
+
+		}
 
         private void skipNextButton_Click(object sender, RoutedEventArgs e)
         {
@@ -152,21 +204,16 @@ namespace MediaPlayerNameSpace
 			{
 				musicListView.SelectedIndex += 1;
 				index += 1;
+				Object play = Objects[index];
+				_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				updateSkipButton();
 
-				if (index == Objects.Count - 1) 
-				{
-					skipNextButton.IsEnabled = false;
-				}
+				_playing = false;
 
-                Object play = Objects[index];
-                _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
-				skipPreviousButton.IsEnabled |= true;
+				playButton_Click(sender, e);
+	
 
-                if (_playing)
-                {
-                    _mediaPlayer.Play();
-                }
-            }
+			}
         }
 
         private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
@@ -176,21 +223,50 @@ namespace MediaPlayerNameSpace
 			{
                 musicListView.SelectedIndex -= 1;
 				index -= 1;
+				Object play = Objects[index];
+				_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				updateSkipButton();
 
-                if (index == 0)
-                {
-                    skipPreviousButton.IsEnabled = false;
-                }
+                _playing = false;
 
-                Object play = Objects[index];
-                _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
-				skipNextButton.IsEnabled |= true;
+                playButton_Click(sender, e);
 
-				if (_playing)
-				{
-                    _mediaPlayer.Play();
-                }
             }
+        }
+
+		private void updateSkipButton()
+		{
+			int index = musicListView.SelectedIndex;
+			skipNextButton.IsEnabled = true;
+			skipPreviousButton.IsEnabled = true;
+
+            if (index == 0)
+            {
+                skipPreviousButton.IsEnabled = false;
+            }
+
+            if (index == Objects.Count - 1)
+            {
+                skipNextButton.IsEnabled = false;
+            }
+        }
+
+        private void musicListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+			_playing = false;
+            int index = musicListView.SelectedIndex;
+            Object play = Objects[index];
+            _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+
+            playButton_Click(sender, e);
+        }
+
+        private void progressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+			double value = progressSlider.Value;
+			TimeSpan newPostition = TimeSpan.FromSeconds(value);
+
+			_mediaPlayer.Position = newPostition;
         }
     }
 }

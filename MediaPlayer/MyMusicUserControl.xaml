@@ -20,11 +20,11 @@
 			<TextBlock Height="20">My music</TextBlock>
 			<Button x:Name="addMusicFile" Click="addMusicFile_Click" Content="Add file" Height="40" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignRaisedLightButton}" />
 		</DockPanel>
-		<ListView Grid.Column="0" Grid.Row="1" x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-			<ListView.View >
-				<GridView>
-					<GridViewColumn Header="Name" Width="350" DisplayMemberBinding="{Binding Name}"/>
-				</GridView>
+		<ListView Grid.Column="0" Grid.Row="1" x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="musicListView_SelectionChanged">
+			<ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="350" DisplayMemberBinding="{Binding Name}"/>
+                </GridView>
 			</ListView.View>
 		</ListView>
 		<StackPanel Grid.Row="2">
@@ -41,6 +41,7 @@
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
 							ToolTip="MaterialDesignFloatingActionMiniLightButton" Margin="8"
+							Name="playButton"
 							Click="playButton_Click">
 					<materialDesign:PackIcon
 								Name="playIcon"
@@ -58,12 +59,15 @@
 				</Button>
 			</StackPanel>
 			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
-				<TextBlock Text="0:00"/>
+                <TextBlock Name="currentPosition" Text="0:00" Margin="0, 0, 10, 0"/>
 				<Slider
+							Name="progressSlider"
 							Maximum="100"
 							Minimum="0"
-							Value="35" Width="400" />
-				<TextBlock Text="10:00"/>
+							Value="35" Width="400"
+							ValueChanged="progressSlider_ValueChanged"/>
+                
+                <TextBlock Name="totalPosition" Text="10:00" Margin="10, 0, 0, 0"/>
 			</StackPanel>
 		</StackPanel>
 	</Grid>
