@@ -20,13 +20,17 @@
 			<TextBlock Height="20">My music</TextBlock>
 			<Button x:Name="addMusicFile" Click="addMusicFile_Click" Content="Add file" Height="40" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignRaisedLightButton}" />
 		</DockPanel>
-		<ListView Grid.Column="0" Grid.Row="1" x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="musicListView_SelectionChanged">
-			<ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" Width="350" DisplayMemberBinding="{Binding Name}"/>
-                </GridView>
-			</ListView.View>
-		</ListView>
+        <DockPanel Grid.Column="0" Grid.Row="1">
+            <MediaElement Name="mediaElement" MediaOpened="mediaElement_MediaOpened" LoadedBehavior="Manual" DockPanel.Dock="Left"/>
+            <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="musicListView_SelectionChanged" Margin="10, 0, 0, 0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="400" DisplayMemberBinding="{Binding Name}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+		
 		<StackPanel Grid.Row="2">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                 <Button
@@ -64,7 +68,7 @@
 							Name="progressSlider"
 							Maximum="100"
 							Minimum="0"
-							Value="35" Width="400"
+							Value="0" Width="400"
 							ValueChanged="progressSlider_ValueChanged"/>
                 
                 <TextBlock Name="totalPosition" Text="10:00" Margin="10, 0, 0, 0"/>

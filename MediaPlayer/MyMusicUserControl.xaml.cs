@@ -80,7 +80,7 @@ namespace MediaPlayerNameSpace
 			}
 		}
 
-		public MediaPlayer _mediaPlayer = new MediaPlayer();
+		//public MediaPlayer mediaElement = new MediaPlayer();
 		private bool _playing = false;
 		DispatcherTimer? _timer;
 
@@ -122,7 +122,7 @@ namespace MediaPlayerNameSpace
         {
 			if (_playing)
 			{
-				_mediaPlayer.Pause();
+				mediaElement.Pause();
 				_playing = false;
                 playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
 
@@ -131,37 +131,21 @@ namespace MediaPlayerNameSpace
 			else
 			{
 				
-				if (musicListView.SelectedItem != null && _mediaPlayer.Source == null)
+				if (musicListView.SelectedItem != null && mediaElement.Source == null)
 				{
 					Object play = (Object)musicListView.SelectedItem;
-					_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+					mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
                 }
 
                 updateSkipButton();
 
-                if (_mediaPlayer.Source != null)
+                if (mediaElement.Source != null)
 				{
-					while (!_mediaPlayer.NaturalDuration.HasTimeSpan) { } // Đợi có timespan rồi chạy tiếp
+					//while (!mediaElement.NaturalDuration.HasTimeSpan) { } // Đợi có timespan rồi chạy tiếp
 
-					if (_mediaPlayer.NaturalDuration.HasTimeSpan)
-						{
-						int hours = _mediaPlayer.NaturalDuration.TimeSpan.Hours;
-                        int minutes = _mediaPlayer.NaturalDuration.TimeSpan.Minutes;
-                        int seconds = _mediaPlayer.NaturalDuration.TimeSpan.Seconds;
+					mediaElement_MediaOpened(sender, e);
 
-                        if (hours == 0)
-                        {
-                            totalPosition.Text = $"{minutes}:{seconds}";
-                        }
-                        else
-                        {
-                            totalPosition.Text = $"{hours}:{minutes}:{seconds}";
-                        }
-
-                        progressSlider.Maximum = _mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-                    }
-
-                    _mediaPlayer.Play();
+                    mediaElement.Play();
                     _playing = true;
                     playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
 
@@ -175,24 +159,18 @@ namespace MediaPlayerNameSpace
 
         private void _timer_Tick(object? sender, EventArgs e)
         {
-			int hours = _mediaPlayer.Position.Hours;
-			int minutes = _mediaPlayer.Position.Minutes;
-			int seconds = _mediaPlayer.Position.Seconds;
+			int hours = mediaElement.Position.Hours;
+			int minutes = mediaElement.Position.Minutes;
+			int seconds = mediaElement.Position.Seconds;
 
-			if (hours == 0)
-			{
-				currentPosition.Text = $"{minutes}:{seconds}";
-			}
-			else
-			{
-				currentPosition.Text = $"{hours}:{minutes}:{seconds}";
-			}
+			currentPosition.Text = $"{hours}:{minutes}:{seconds}";
+
 
 			//progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
 
-			if (_mediaPlayer.NaturalDuration.HasTimeSpan)
+			if (mediaElement.NaturalDuration.HasTimeSpan)
 			{
-				progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
+				progressSlider.Value = mediaElement.Position.TotalSeconds;
 			}
 
 		}
@@ -205,7 +183,7 @@ namespace MediaPlayerNameSpace
 				musicListView.SelectedIndex += 1;
 				index += 1;
 				Object play = Objects[index];
-				_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
 				updateSkipButton();
 
 				_playing = false;
@@ -224,7 +202,7 @@ namespace MediaPlayerNameSpace
                 musicListView.SelectedIndex -= 1;
 				index -= 1;
 				Object play = Objects[index];
-				_mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
+				mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
 				updateSkipButton();
 
                 _playing = false;
@@ -253,12 +231,19 @@ namespace MediaPlayerNameSpace
 
         private void musicListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-			_playing = false;
+			
             int index = musicListView.SelectedIndex;
-            Object play = Objects[index];
-            _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
 
-            playButton_Click(sender, e);
+			if (index >= 0 && index < Objects.Count)
+			{
+                _playing = false;
+                Object play = Objects[index];
+				mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
+
+                playButton_Click(sender, e);
+            }
+
+            
         }
 
         private void progressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -266,7 +251,21 @@ namespace MediaPlayerNameSpace
 			double value = progressSlider.Value;
 			TimeSpan newPostition = TimeSpan.FromSeconds(value);
 
-			_mediaPlayer.Position = newPostition;
+			mediaElement.Position = newPostition;
+        }
+
+        private void mediaElement_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            if (mediaElement.NaturalDuration.HasTimeSpan)
+            {
+                int hours = mediaElement.NaturalDuration.TimeSpan.Hours;
+                int minutes = mediaElement.NaturalDuration.TimeSpan.Minutes;
+                int seconds = mediaElement.NaturalDuration.TimeSpan.Seconds;
+
+                totalPosition.Text = $"{hours}:{minutes}:{seconds}";
+
+                progressSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+            }
         }
     }
 }
