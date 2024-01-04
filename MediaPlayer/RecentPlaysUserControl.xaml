@@ -17,26 +17,22 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Column="0" Grid.Row="0" >
             <TextBlock Height="20">Recent plays</TextBlock>
-            
         </DockPanel>
-        <Grid Grid.Column="0" Grid.Row="1">
-            <!--<MediaElement MediaOpened="player_MediaOpened" MediaEnded="player_MediaEnded" LoadedBehavior="Manual" Name="player" Width="554" Height="266" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="119,0,0,0"/>-->
-        </Grid>
-        <Grid Grid.Column="0" Grid.Row="1" x:Name="GridMain">
-            <ListView Grid.Column="0" Grid.Row="1" x:Name="recentPlaysListView" BorderThickness="0"   ScrollViewer.VerticalScrollBarVisibility="Auto" MouseDoubleClick="musicListView_MouseDoubleClick">
-                <!--<ListView.View >
-                    <GridView>
-                        <GridViewColumn Header="Name" Width="350" DisplayMemberBinding="{Binding Name}"/>
-                    </GridView>
-                </ListView.View>-->
+        <DockPanel Grid.Column="0" Grid.Row="1">
+            <MediaElement Name="mediaElement" MediaOpened="mediaElement_MediaOpened" MediaEnded="mediaElement_MediaEnded" LoadedBehavior="Manual" DockPanel.Dock="Left"/>
+            <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0" MouseDoubleClick="musicListView_MouseDoubleClick">
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Delete" Click="MenuItem_Click"></MenuItem>
+                        <MenuItem Header="Delete" MenuItem.Click="MenuItem_Click"></MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="400" DisplayMemberBinding="{Binding Name}"/>
+                    </GridView>
+                </ListView.View>
             </ListView>
-            
-        </Grid>
+        </DockPanel>
         <Grid Grid.Row="2">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -46,12 +42,25 @@
                     <Button
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignIconButton}"
+							ToolTip="Shuffle"
+                        
+							Background="Transparent"
+                            x:Name="shuffleButton"
+							Click="shuffleButton_Click">
+                        <materialDesign:PackIcon 
+                            x:Name="shuffleIcon"
+                            Kind="Shuffle" />
+                    </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+							Style="{StaticResource MaterialDesignIconButton}"
 							ToolTip="MaterialDesignIconButton"
 							Name ="skipPreviousButton"
 							Click="skipPreviousButton_Click">
                         <materialDesign:PackIcon Kind="SkipPrevious" />
                     </Button>
-                    <Button
+                    <Button 
+                            Name="playButton"
 							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 							Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
 							ToolTip="MaterialDesignFloatingActionMiniLightButton" Margin="8"
@@ -70,14 +79,27 @@
 							Click="skipNextButton_Click">
                         <materialDesign:PackIcon Kind="SkipNext" />
                     </Button>
+                    <Button
+							IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+							Style="{StaticResource MaterialDesignIconButton}"
+							ToolTip="Playback"
+                            Background="Transparent"
+							x:Name ="repeatButton"
+							Click="repeatButton_Click">
+                        <materialDesign:PackIcon
+                            x:Name="repeatIcon"
+                            Kind="RepeatOne" />
+                    </Button>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="0:00"/>
+                    <TextBlock Name="currentPosition" Text="0:00" Margin="0, 0, 10, 0"/>
                     <Slider
-							Maximum="100"
-							Minimum="0"
-							Value="35" Width="400" />
-                    <TextBlock Text="10:00"/>
+						Name="progressSlider"
+						Maximum="100"
+						Minimum="0"
+						Value="0" Width="400"
+						ValueChanged="progressSlider_ValueChanged"/>
+                    <TextBlock Name="totalPosition" Text="10:00" Margin="10, 0, 0, 0"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

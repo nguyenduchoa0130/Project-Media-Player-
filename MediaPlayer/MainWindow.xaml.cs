@@ -17,6 +17,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
+using System.Media;
+using System.Threading;
 
 namespace MediaPlayerNameSpace
 {
@@ -25,7 +27,9 @@ namespace MediaPlayerNameSpace
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public MainWindow()
+
+
+        public MainWindow()
 		{
 			InitializeComponent();
 		}
@@ -70,5 +74,5 @@ namespace MediaPlayerNameSpace
 			GridMain.Children.Clear();
 			GridMain.Children.Add(new MyMusicUserControl());
 		}
-	}
+    }
 }

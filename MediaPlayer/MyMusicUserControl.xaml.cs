@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Media;
 using System.Windows.Threading;
 using System.Security;
+using System.IO;
 
 namespace MediaPlayerNameSpace
 {
@@ -23,6 +24,10 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class MyMusicUserControl : UserControl
     {
+        string filename = @"RecentPlays//recentPlaysList.txt";
+        string personPath;
+
+        List<string> listFileMusic; 
         private bool _playing = false;
         private bool _shuffle = false;
         enum repeatMode
@@ -33,16 +38,15 @@ namespace MediaPlayerNameSpace
         }
         private int repeat = (int)repeatMode.unrepeat;
 
-        MediaPlayer _mediaPlayer = new MediaPlayer();
+        public ObservableCollection<Object> Objects = new ObservableCollection<Object>();
 
-        ObservableCollection<Object> Objects = new ObservableCollection<Object>();
+        DispatcherTimer? _timer;
 
-        public string pathFile;
-        List<string> listMusic = new List<string>();
-        string filemusic = "";
         public MyMusicUserControl()
         {
             InitializeComponent();
+            personPath = Path.GetFullPath(filename);
+            listFileMusic = new List<string>(File.ReadAllLines(personPath));
             playButton.IsEnabled = false;
             skipNextButton.IsEnabled = false;
             skipPreviousButton.IsEnabled = false;
@@ -50,49 +54,11 @@ namespace MediaPlayerNameSpace
             repeatButton.IsEnabled = false;
         }
 
-        public class Object : INotifyPropertyChanged
-        {
-            private string name = "";
-            private string dir = "";
-            private string extension = "";
-            public string Name
-            {
-                get => name; set
-                {
-                    name = value;
-                    RaiseEvent();
-                }
-            }
-            public string Extension
-            {
-                get => extension; set
-                {
-                    extension = value;
-                    RaiseEvent();
-                }
-            }
-            public string Dir
-            {
-                get => dir; set
-                {
-                    dir = value;
-                    RaiseEvent();
-                }
-            }
-            public event PropertyChangedEventHandler? PropertyChanged;
-
-            void RaiseEvent([CallerMemberName] string propertyName = "")
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        DispatcherTimer? _timer;
         private void addMusicFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = true;
-
+            int index = musicListView.SelectedIndex;
             if (dialog.ShowDialog() == true)
             {
                 foreach (string sFileName in dialog.FileNames)
@@ -106,10 +72,10 @@ namespace MediaPlayerNameSpace
                                 Objects.Remove(Objects[j]);
                         }
                     }
-                    if (listMusic != null)
-                        filemusic += Path.GetFullPath(sFileName) + "\r";
+                    //if (listMusic != null)
+                    //    filemusic += Path.GetFullPath(sFileName) + "\r";
                 }
-                System.IO.File.WriteAllText(@"D:\Nam4\Window\Project2\MediaPlayer\RecentPlays\recentPlaysList.txt", filemusic);
+                //System.IO.File.WriteAllText(@"D:\Nam4\Window\Project2\MediaPlayer\RecentPlays\recentPlaysList.txt", filemusic);
 
                 musicListView.Items.Clear();
                 foreach (Object obj in Objects)
@@ -122,6 +88,70 @@ namespace MediaPlayerNameSpace
             repeatButton.IsEnabled = true;
             repeatIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.RepeatOff;
             shuffleIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.ShuffleDisabled;
+            musicListView.SelectedIndex = index;
+            updateButton();
+        }
+
+        private void updateButton()
+        {
+            int index = musicListView.SelectedIndex;
+            skipNextButton.IsEnabled = true;
+            skipPreviousButton.IsEnabled = true;
+
+            if (index == -1)
+            {
+                _playing = false;
+                playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+                skipPreviousButton.IsEnabled = false;
+                skipNextButton.IsEnabled = false;
+                return;
+            }
+
+            if (index == 0)
+            {
+                skipPreviousButton.IsEnabled = false;
+            }
+
+            if (index == Objects.Count - 1 && _shuffle == false)
+            {
+                skipNextButton.IsEnabled = false;
+            }
+
+            if (repeat == (int)repeatMode.repeatall || _shuffle == true || repeat == (int)repeatMode.repeatone)
+            {
+                skipNextButton.IsEnabled = true;
+                skipPreviousButton.IsEnabled = true;
+            }
+
+            if (_playing)
+            {
+                playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
+            }
+            else
+            {
+                playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+            }
+        }
+
+        private void playMusic(object sender, RoutedEventArgs e, int index)
+        {
+            Object play = Objects[index];
+            mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
+
+            if (!listFileMusic.Contains($"{play.Dir}|{play.Name}|{play.Extension}"))
+            {
+                listFileMusic.Add($"{play.Dir}|{play.Name}|{play.Extension}");
+                File.AppendAllText(personPath, $"{play.Dir}|{play.Name}|{play.Extension}\n");
+            }
+
+            mediaElement_MediaOpened(sender, e);
+            mediaElement.Play();
+            _playing = true;
+            _timer = new DispatcherTimer();
+            _timer.Tick += _timer_Tick;
+            _timer.Start();
+            musicListView.SelectedIndex = index;
+            updateButton();
         }
 
         private void playButton_Click(object sender, RoutedEventArgs e)
@@ -131,25 +161,19 @@ namespace MediaPlayerNameSpace
                 mediaElement.Pause();
                 _playing = false;
                 playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
-
                 _timer?.Stop();
             }
             else
             {
-                if (musicListView.SelectedItem != null && mediaElement.Source == null)
+                if (mediaElement.Source == null)
                 {
-                    Object play = (Object)musicListView.SelectedItem;
-                    mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
+                    int index = 0;
+                    playMusic(sender, e, index);
                 }
-
-                updateSkipButton();
 
                 if (mediaElement.Source != null)
                 {
-                    //while (!mediaElement.NaturalDuration.HasTimeSpan) { } // Đợi có timespan rồi chạy tiếp
-
                     mediaElement_MediaOpened(sender, e);
-
                     mediaElement.Play();
                     _playing = true;
                     playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
@@ -169,9 +193,6 @@ namespace MediaPlayerNameSpace
 
 			currentPosition.Text = $"{hours}:{minutes}:{seconds}";
 
-
-			//progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
-
 			if (mediaElement.NaturalDuration.HasTimeSpan)
 			{
 				progressSlider.Value = mediaElement.Position.TotalSeconds;
@@ -180,21 +201,24 @@ namespace MediaPlayerNameSpace
 
         private void skipNextButton_Click(object sender, RoutedEventArgs e)
         {
-            int index = musicListView.SelectedIndex;
-            if (index < Objects.Count - 1)
+            if (_shuffle == true)
             {
-                musicListView.SelectedIndex += 1;
-                index += 1;
-                Object play = Objects[index];
-                mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
-                updateSkipButton();
-
-                _playing = false;
-                playButton_Click(sender, e);
-
-            }
-            if (shuffleButton.IsEnabled == true)
                 shuffleMode(sender, e);
+            }
+            else
+            {
+                int index = musicListView.SelectedIndex;
+                index += 1;
+                if (repeat == (int)repeatMode.repeatall)
+                {
+                    index %= Objects.Count;
+                }
+                else if (repeat == (int)repeatMode.repeatone)
+                {
+                    index -= 1;
+                }
+                playMusic(sender, e, index);
+            }
         }
 
         private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
@@ -202,37 +226,8 @@ namespace MediaPlayerNameSpace
             int index = musicListView.SelectedIndex;
             if (index > 0)
             {
-                musicListView.SelectedIndex -= 1;
                 index -= 1;
-                Object play = Objects[index];
-                mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
-                updateSkipButton();
-
-                _playing = false;
-
-                playButton_Click(sender, e);
-            }
-        }
-
-        private void updateSkipButton()
-        {
-            int index = musicListView.SelectedIndex;
-            skipNextButton.IsEnabled = true;
-            skipPreviousButton.IsEnabled = true;
-
-            if (index == 0)
-            {
-                skipPreviousButton.IsEnabled = false;
-            }
-
-            if (index == Objects.Count - 1 && shuffleButton.IsEnabled == false)
-            {
-                skipNextButton.IsEnabled = false;
-            }
-            if (shuffleButton.IsEnabled != false)
-            {
-                skipNextButton.IsEnabled = true;
-
+                playMusic(sender, e, index);
             }
         }
 
@@ -261,20 +256,29 @@ namespace MediaPlayerNameSpace
         private void musicListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int index = musicListView.SelectedIndex;
-
             if (index >= 0 && index < Objects.Count)
             {
-                _playing = false;
-                Object play = Objects[index];
-                mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
-
-                playButton_Click(sender, e);
+                playMusic(sender, e, index);
             }
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            int index = musicListView.Items.IndexOf(musicListView.SelectedItem);
+            int currIndex = musicListView.SelectedIndex;
             musicListView.Items.RemoveAt(musicListView.Items.IndexOf(musicListView.SelectedItem));
+            Object temp = Objects[index];
+            listFileMusic.Remove($"{temp.Dir}|{temp.Name}|{temp.Extension}");
+            File.WriteAllLines(personPath, listFileMusic);
+            if (index == currIndex)
+            {
+                mediaElement.Source = null;
+                playIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+                updateButton();
+                //_playing = false;
+                //playButton_Click(sender, e);
+            }
+            Objects.RemoveAt(index);
         }
 
         private void repeatButton_Click(object sender, RoutedEventArgs e)
@@ -294,6 +298,7 @@ namespace MediaPlayerNameSpace
                 repeat = (int)repeatMode.repeatall;
                 repeatIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Repeat;
             }
+            updateButton();
         }
 
         private void shuffleMode(object sender, RoutedEventArgs e)
@@ -308,17 +313,7 @@ namespace MediaPlayerNameSpace
                 init = random.Next(number);
             } while (init == index);
 
-            Object play = Objects[init];
-            musicListView.SelectedIndex = init;
-            _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
-            updateSkipButton();
-            mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
-            mediaElement_MediaOpened(sender, e);
-            mediaElement.Play();
-            _playing = true;
-            _timer = new DispatcherTimer();
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
+            playMusic(sender, e, init);
         }
 
         private void shuffleButton_Click(object sender, RoutedEventArgs e)
@@ -333,20 +328,7 @@ namespace MediaPlayerNameSpace
                 _shuffle = true;
                 shuffleIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Shuffle;
             }
-        }
-
-        private void playNextMusic(object sender, RoutedEventArgs e, int index)
-        {
-            Object play = Objects[index];
-            _mediaPlayer.Open(new Uri($"{play.Dir}{play.Name}"));
-            updateSkipButton();
-            mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
-            mediaElement_MediaOpened(sender, e);
-            mediaElement.Play();
-            _playing = true;
-            _timer = new DispatcherTimer();
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
+            updateButton();
         }
 
         private void mediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -356,7 +338,7 @@ namespace MediaPlayerNameSpace
                 if (repeat == (int)repeatMode.repeatone)
                 {
                     int index = musicListView.SelectedIndex;
-                    playNextMusic(sender, e, index);
+                    playMusic(sender, e, index);
                 }
 
                 if (repeat == (int)repeatMode.unrepeat)
@@ -366,42 +348,30 @@ namespace MediaPlayerNameSpace
                     {
                         musicListView.SelectedIndex += 1;
                         index += 1;
-                        playNextMusic(sender, e, index);
+                        playMusic(sender, e, index);
                     }
                 }
 
                 if (repeat == (int)repeatMode.repeatall)
                 {
-                    int index = musicListView.SelectedIndex;
-                    if (index == Objects.Count - 1)
-                    {
-                        musicListView.SelectedIndex = 0;
-                        index = 0;
-                        playNextMusic(sender, e, index);
-                    }
-                    else if (index < Objects.Count - 1)
-                    {
-                        musicListView.SelectedIndex += 1;
-                        index += 1;
-                        playNextMusic(sender, e, index);
-                    }
+                    int index = musicListView.SelectedIndex + 1;
+                    index %= Objects.Count;
+                    playMusic(sender, e, index);
                 }
             }
             else
             {
                 if (repeat == (int)repeatMode.unrepeat || repeat == (int)repeatMode.repeatall)
+                {
                     shuffleMode(sender, e);
+                }
+
                 if (repeat == (int)repeatMode.repeatone)
                 {
                     int index = musicListView.SelectedIndex;
-                    playNextMusic(sender, e, index);
+                    playMusic(sender, e, index);
                 }
             }
-        }
-
-        private void musicListView_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
