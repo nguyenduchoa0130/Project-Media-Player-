@@ -49,11 +49,6 @@ namespace MediaPlayerNameSpace
             shuffleButton.IsEnabled = false;
             repeatButton.IsEnabled = false;
         }
-        public MyMusicUserControl()
-        {
-            InitializeComponent();
-            init();
-        }
 
         public class Object : INotifyPropertyChanged
         {
@@ -141,7 +136,6 @@ namespace MediaPlayerNameSpace
             }
             else
             {
-
                 if (musicListView.SelectedItem != null && mediaElement.Source == null)
                 {
                     Object play = (Object)musicListView.SelectedItem;
@@ -163,29 +157,10 @@ namespace MediaPlayerNameSpace
                     _timer = new DispatcherTimer();
                     _timer.Tick += _timer_Tick;
                     _timer.Start();
-
                 }
             }
         }
-
-        private void _timer_Tick(object? sender, EventArgs e)
-        {
-            int hours = mediaElement.Position.Hours;
-            int minutes = mediaElement.Position.Minutes;
-            int seconds = mediaElement.Position.Seconds;
-
-            currentPosition.Text = $"{hours}:{minutes}:{seconds}";
-
-
-            //progressSlider.Value = _mediaPlayer.Position.TotalSeconds;
-
-            if (mediaElement.NaturalDuration.HasTimeSpan)
-            {
-                progressSlider.Value = mediaElement.Position.TotalSeconds;
-            }
-
-        }
-
+       
         private void _timer_Tick(object? sender, EventArgs e)
         {
 			int hours = mediaElement.Position.Hours;
@@ -201,7 +176,6 @@ namespace MediaPlayerNameSpace
 			{
 				progressSlider.Value = mediaElement.Position.TotalSeconds;
 			}
-
 		}
 
         private void skipNextButton_Click(object sender, RoutedEventArgs e)
@@ -216,9 +190,7 @@ namespace MediaPlayerNameSpace
                 updateSkipButton();
 
                 _playing = false;
-
                 playButton_Click(sender, e);
-
 
             }
             if (shuffleButton.IsEnabled == true)
@@ -239,7 +211,6 @@ namespace MediaPlayerNameSpace
                 _playing = false;
 
                 playButton_Click(sender, e);
-
             }
         }
 
@@ -426,6 +397,11 @@ namespace MediaPlayerNameSpace
                     playNextMusic(sender, e, index);
                 }
             }
+        }
+
+        private void musicListView_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
