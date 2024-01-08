@@ -25,7 +25,7 @@
             <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0" MouseDoubleClick="musicListView_MouseDoubleClick">
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Delete" MenuItem.Click="MenuItem_Click"></MenuItem>
+                        <MenuItem Header="Delete" MenuItem.Click="MenuItem_Click" ></MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>

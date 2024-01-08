@@ -60,7 +60,7 @@ namespace MediaPlayerNameSpace
             foreach (string line in listFileMusic)
             {
                 string[] temp = line.Split('|');
-                if (File.Exists(@$"{temp[0]}{temp[1]}"))
+                if (File.Exists(@$"{temp[0]}{temp[1]}{temp[2]}"))
                 {
                     Objects.Add(new Object
                     {
@@ -136,7 +136,7 @@ namespace MediaPlayerNameSpace
         private void playMusic(object sender, RoutedEventArgs e, int index)
         {
             Object play = Objects[index];
-            mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
+            mediaElement.Source = new Uri($"{play.Dir}{play.Name}{play.Extension}");
 
             if (!listFileMusic.Contains($"{play.Dir}|{play.Name}|{play.Extension}"))
             {
@@ -223,10 +223,22 @@ namespace MediaPlayerNameSpace
 
         private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            int index = musicListView.SelectedIndex;
-            if (index > 0)
+            if (_shuffle == true)
             {
+                shuffleMode(sender, e);
+            }
+            else
+            {
+                int index = musicListView.SelectedIndex;
                 index -= 1;
+                if (repeat == (int)repeatMode.repeatall)
+                {
+                    index = (index + Objects.Count) % Objects.Count;
+                }
+                else if (repeat == (int)repeatMode.repeatone)
+                {
+                    index += 1;
+                }
                 playMusic(sender, e, index);
             }
         }

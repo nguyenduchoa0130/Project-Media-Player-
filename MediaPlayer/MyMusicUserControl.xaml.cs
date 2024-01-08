@@ -11,9 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Path = System.IO.Path;
-using System.Reflection;
 using System.Media;
-using System.Windows.Threading;
 using System.Security;
 using System.IO;
 
@@ -63,7 +61,7 @@ namespace MediaPlayerNameSpace
             {
                 foreach (string sFileName in dialog.FileNames)
                 {
-                    Objects.Add(new Object { Name = Path.GetFileName(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
+                    Objects.Add(new Object { Name = Path.GetFileNameWithoutExtension(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
                     for (int i = 0; i < Objects.Count; i++)
                     {
                         for (int j = i + 1; j < Objects.Count; j++)
@@ -136,7 +134,7 @@ namespace MediaPlayerNameSpace
         private void playMusic(object sender, RoutedEventArgs e, int index)
         {
             Object play = Objects[index];
-            mediaElement.Source = new Uri($"{play.Dir}{play.Name}");
+            mediaElement.Source = new Uri($"{play.Dir}{play.Name}{play.Extension}");
 
             if (!listFileMusic.Contains($"{play.Dir}|{play.Name}|{play.Extension}"))
             {
@@ -223,10 +221,22 @@ namespace MediaPlayerNameSpace
 
         private void skipPreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            int index = musicListView.SelectedIndex;
-            if (index > 0)
+            if (_shuffle == true)
             {
+                shuffleMode(sender, e);
+            }
+            else
+            {
+                int index = musicListView.SelectedIndex;
                 index -= 1;
+                if (repeat == (int)repeatMode.repeatall)
+                {
+                    index = (index + Objects.Count) % Objects.Count;
+                }
+                else if (repeat == (int)repeatMode.repeatone)
+                {
+                    index += 1;
+                }
                 playMusic(sender, e, index);
             }
         }
