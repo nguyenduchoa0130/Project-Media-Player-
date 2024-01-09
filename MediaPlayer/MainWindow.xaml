@@ -5,9 +5,14 @@
 				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:local="clr-namespace:MediaPlayerNameSpace"
 				mc:Ignorable="d"
+				xmlns:data="clr-namespace:MediaPlayerNameSpace"
 				xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 				Title="Media Player" Height="450" Width="800" MinHeight="450" MinWidth="800" Loaded="Window_Loaded">
-	<Window.Resources>
+
+    <Window.DataContext >
+        <data:MusicList/>
+    </Window.DataContext>
+    <Window.Resources>
 		<Storyboard x:Key="OpenMenu">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
 				<EasingDoubleKeyFrame KeyTime="0" Value="60"/>
@@ -37,6 +42,7 @@
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height = "*" />
+            <RowDefinition Height="130"/>
         </Grid.RowDefinitions>
 		<Grid Grid.Column="1" x:Name="GridMain" Grid.ColumnSpan="2"></Grid>
 		<Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#00DBA7">
@@ -72,7 +78,7 @@
 				</ListView>
 			</StackPanel>
 		</Grid>
-        <!--<StackPanel Grid.Row="1" Grid.ColumnSpan="3">
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
             <Grid Height="30">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>
@@ -99,20 +105,21 @@
                         <StackPanel Width="auto" Grid.Column="0" Orientation="Horizontal" Margin="5, 0, 0, 0">
                             <MediaElement Name="myMediaElement"
 										  LoadedBehavior="Manual"
+                                          MediaOpened="myMediaElement_MediaOpened"
 										  Width="120"
 										  Height="70" />
-                            <TextBlock VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="5, 0, 0, 0">Âm Thầm Bên em aaaaaaaaaaaaaaaaaa</TextBlock>
+                            <TextBlock x:Name="musicName" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="5, 0, 0, 0" Text="Âm  thầm bên em"></TextBlock>
                         </StackPanel>
                     </Button>
                 </Border>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                     <Button
-						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 						Style="{StaticResource MaterialDesignIconButton}"
 						ToolTip="Shuffle"
-                        
 						Background="Transparent"
-                        x:Name="shuffleButton">
+                        x:Name="shuffleButton"
+                        Click="shuffleButton_Click">
                         <materialDesign:PackIcon 
                         x:Name="shuffleIcon"
                         Kind="Shuffle" />
@@ -121,14 +128,16 @@
 						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 						Style="{StaticResource MaterialDesignIconButton}"
 						ToolTip="MaterialDesignIconButton"
-						x:Name ="skipPreviousButton">
+						x:Name ="skipPreviousButton"
+                        Click="skipPreviousButton_Click">
                         <materialDesign:PackIcon Kind="SkipPrevious" />
                     </Button>
                     <Button
 						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 						Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
 						ToolTip="MaterialDesignFloatingActionMiniLightButton" Margin="8"
-                        x:Name="playButton">
+                        x:Name="playButton"
+                        Click="playButton_Click">
                         <materialDesign:PackIcon
 							x:Name="playIcon"
 							Width="24"
@@ -139,7 +148,8 @@
 						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 						Style="{StaticResource MaterialDesignIconButton}"
 						ToolTip="MaterialDesignIconButton"
-						x:Name="skipNextButton">
+						x:Name="skipNextButton"
+                        Click="skipNextButton_Click">
                         <materialDesign:PackIcon Kind="SkipNext" />
                     </Button>
                     <Button
@@ -147,13 +157,14 @@
 						Style="{StaticResource MaterialDesignIconButton}"
 						ToolTip="Playback"
                         Background="Transparent"
-						x:Name ="repeatButton">
+						x:Name ="repeatButton"
+                        Click="repeatButton_Click">
                         <materialDesign:PackIcon
                         x:Name="repeatIcon"
                         Kind="RepeatOne" />
                     </Button>
                 </StackPanel>
             </Grid>
-        </StackPanel>-->
+        </StackPanel>
     </Grid>
 </Window>
