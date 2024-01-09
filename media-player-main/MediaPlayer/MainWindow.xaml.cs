@@ -41,6 +41,15 @@ namespace MediaPlayerNameSpace
 		private List<string> listFileMusic;
 		string personPath;
         string filename = @"RecentPlays//recentPlaysList.txt";
+        public class Wrapper:INotifyPropertyChanged
+        {
+            public string CurrentTime { get; set; }
+            public string TotalTime { get; set; } 
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+        }
+        Wrapper wrapper;
+
         enum repeatMode
         {
             unrepeat,
@@ -53,7 +62,8 @@ namespace MediaPlayerNameSpace
         public MainWindow()
 		{
 			InitializeComponent();
-		}
+           
+        }
 
 		private void buttonOpenMenu_Click(object sender, RoutedEventArgs e)
 		{
@@ -126,6 +136,12 @@ namespace MediaPlayerNameSpace
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+            wrapper = new Wrapper
+            {
+                CurrentTime = "00:00:00",
+                TotalTime = "00:00:00"
+            };
+            DataContext = wrapper;
             personPath = Path.GetFullPath(filename);
             listFileMusic = new List<string>(File.ReadAllLines(personPath));
 
@@ -150,6 +166,7 @@ namespace MediaPlayerNameSpace
                 _index = newIndex;
                 playMusic(sender, e, _index);
             };
+           
         }
 
         private void updateButton()
@@ -200,7 +217,8 @@ namespace MediaPlayerNameSpace
             int minutes = myMediaElement.Position.Minutes;
             int seconds = myMediaElement.Position.Seconds;
 
-            currentPosition.Text = $"{hours}:{minutes}:{seconds}";
+            //currentPosition.Text = $"{hours}:{minutes}:{seconds}";
+            wrapper.CurrentTime = $"{hours}:{minutes}:{seconds}";
 
             if (myMediaElement.NaturalDuration.HasTimeSpan)
             {
@@ -379,7 +397,8 @@ namespace MediaPlayerNameSpace
                 int minutes = myMediaElement.NaturalDuration.TimeSpan.Minutes;
                 int seconds = myMediaElement.NaturalDuration.TimeSpan.Seconds;
 
-                totalPosition.Text = $"{hours}:{minutes}:{seconds}";
+                //totalPosition.Text = $"{hours}:{minutes}:{seconds}";
+                wrapper.TotalTime = $"{hours}:{minutes}:{seconds}";
 
                 progressSlider.Maximum = myMediaElement.NaturalDuration.TimeSpan.TotalSeconds;
             }
