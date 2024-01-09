@@ -46,6 +46,10 @@ namespace MediaPlayerNameSpace
         public RecentPlaysUserControl()
         {
             InitializeComponent();
+            
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             personPath = Path.GetFullPath(filename);
             listFileMusic = new List<string>(File.ReadAllLines(personPath));
             playButton.IsEnabled = false;
@@ -53,9 +57,7 @@ namespace MediaPlayerNameSpace
             skipPreviousButton.IsEnabled = false;
             shuffleButton.IsEnabled = false;
             repeatButton.IsEnabled = false;
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+
             personPath = Path.GetFullPath(filename);
             foreach (string line in listFileMusic)
             {
