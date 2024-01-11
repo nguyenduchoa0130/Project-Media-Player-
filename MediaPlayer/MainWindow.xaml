@@ -7,7 +7,7 @@
 				mc:Ignorable="d"
 				xmlns:data="clr-namespace:MediaPlayerNameSpace"
 				xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Media Player" Height="500" Width="800" MinHeight="450" MinWidth="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="Hòa MP3" Height="500" Width="800" MinHeight="450" MinWidth="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
 
 
     <Window.Resources>
@@ -45,7 +45,7 @@
             <RowDefinition Height="130"/>
         </Grid.RowDefinitions>
         <Grid Grid.Column="1" x:Name="GridMain" Grid.ColumnSpan="2"></Grid>
-        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#00DBA7">
+        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#130c1c">
             <StackPanel>
                 <Grid Height="60" Background="White" RenderTransformOrigin="0.5,0.5">
                     <Button x:Name="buttonOpenMenu" Height="60" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Gray" Click="buttonOpenMenu_Click">
@@ -108,7 +108,7 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="BtnTemp" Height="90" Background="Transparent" BorderBrush="Transparent" Click="Button_Click">
+                <Button x:Name="BtnTemp" Height="90" Background="Transparent" BorderBrush="Transparent">
                     <StackPanel Width="auto" Grid.Column="0" Orientation="Horizontal">
                         <MediaElement Name="myMediaElement"
 										LoadedBehavior="Manual"

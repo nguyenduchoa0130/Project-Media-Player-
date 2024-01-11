@@ -33,7 +33,7 @@ namespace MediaPlayerNameSpace
         public event MusicChangedHandler MusicsChanged;
         public event indexChangedHandler IndexChanged;
 
-        string filename = @"RecentPlays//recentPlaysList.txt";
+        string filename = @"RecentsList//recentPlaysList.txt";
         string personPath;
         List<string> listFileMusic;
         ObservableCollection<MediaPlayerName> oldObjects { get; set; }

@@ -24,10 +24,10 @@
     <None Update="PlayList\test2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="RecentPlays\musics.txt">
+    <None Update="RecentsList\musics.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="RecentPlays\recentPlaysList.txt">
+    <None Update="RecentsList\recentPlaysList.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

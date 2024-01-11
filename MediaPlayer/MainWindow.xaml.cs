@@ -3,33 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.IO;
-using System.Media;
-using System.Threading;
 using System.Windows.Threading;
 using Path = System.IO.Path;
-using System.Xml.Linq;
-using MaterialDesignThemes.Wpf;
-using System.Diagnostics;
 
 namespace MediaPlayerNameSpace
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public string Keywork { get; set; } = "";
@@ -48,7 +29,7 @@ namespace MediaPlayerNameSpace
         DispatcherTimer? _timer;
 		private List<string> listFileMusic;
 		string personPath;
-        string filename = @"RecentPlays//recentPlaysList.txt";
+        string filename = @"RecentsList//recentPlaysList.txt";
         public delegate void KeyworkChangedHandler(string newKeywork);
         public static event KeyworkChangedHandler KeyworkChanged;
         public class Wrapper:INotifyPropertyChanged
@@ -137,7 +118,7 @@ namespace MediaPlayerNameSpace
 
         private void loadMusic()
         {
-            string curPath = Path.GetFullPath(@"RecentPlays//musics.txt");
+            string curPath = Path.GetFullPath(@"RecentsList//musics.txt");
             List<string> temp = new List<string>(File.ReadAllLines(curPath));
 
             foreach (string line in temp)
@@ -284,14 +265,11 @@ namespace MediaPlayerNameSpace
             repeatIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.RepeatOff;
             shuffleIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.ShuffleDisabled;
 
-
-
-            // Khởi tạo các button
             //playButton.IsEnabled = false;
-            skipNextButton.IsEnabled = false;
             skipPreviousButton.IsEnabled = false;
-            shuffleButton.IsEnabled = false;
+            skipNextButton.IsEnabled = false;
             repeatButton.IsEnabled = false;
+            shuffleButton.IsEnabled = false;
             _shuffle = false;
 
 
@@ -313,9 +291,9 @@ namespace MediaPlayerNameSpace
 
         private void updateButton()
         {
-            skipNextButton.IsEnabled = true;
             skipPreviousButton.IsEnabled = true;
             shuffleButton.IsEnabled = true;
+            skipNextButton.IsEnabled = true;
             repeatButton.IsEnabled = true;
 
             if (_index == -1)
@@ -356,10 +334,9 @@ namespace MediaPlayerNameSpace
         private void _timer_Tick(object? sender, EventArgs e)
         {
             int hours = myMediaElement.Position.Hours;
-            int minutes = myMediaElement.Position.Minutes;
             int seconds = myMediaElement.Position.Seconds;
+            int minutes = myMediaElement.Position.Minutes;
 
-            //currentPosition.Text = $"{hours}:{minutes}:{seconds}";
             wrapper.CurrentTime = $"{hours}:{minutes}:{seconds}";
 
             if (myMediaElement.NaturalDuration.HasTimeSpan)
@@ -554,14 +531,6 @@ namespace MediaPlayerNameSpace
 
                 progressSlider.Maximum = myMediaElement.NaturalDuration.TimeSpan.TotalSeconds;
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //GridMain.Children.Clear();
-            //this.RemoveLogicalChild(myMediaElement);
-            //this.RemoveVisualChild(myMediaElement);
-            //GridMain.Children.Add(myMediaElement);
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

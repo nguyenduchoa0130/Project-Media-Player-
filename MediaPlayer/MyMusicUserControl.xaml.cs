@@ -80,7 +80,7 @@ namespace MediaPlayerNameSpace
             }
             
 
-            string path = Path.GetFullPath(@"RecentPlays\\musics.txt");
+            string path = Path.GetFullPath(@"RecentsList\\musics.txt");
             foreach(var obj in oldObjects)
             {
                 File.AppendAllText(path, $"{obj.Dir}|{obj.Name}|{obj.Extension}\n");
