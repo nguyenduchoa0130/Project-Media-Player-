@@ -96,6 +96,7 @@
                 <TextBlock Name="currentPosition" Text="{Binding CurrentTime, Converter={StaticResource TimeConverter}}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,7,0,0" />
                 <Slider	Grid.Column="1"
 						Name="progressSlider"
+                        ValueChanged="progressSlider_ValueChanged"
 						Maximum="100"
 						Minimum="0"
 						Value="0"
