@@ -27,15 +27,18 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class RecentPlaysUserControl 
     {
-        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects, int newIndex);
+        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects);
+        public delegate void indexChangedHandler(int oldIndex);
+
         public event MusicChangedHandler MusicsChanged;
+        public event indexChangedHandler IndexChanged;
 
         string filename = @"RecentPlays//recentPlaysList.txt";
         string personPath;
         List<string> listFileMusic;
-        ObservableCollection<Object> oldObjects;
+        ObservableCollection<Object> oldObjects { get; set; }
 
-        public RecentPlaysUserControl(ObservableCollection<Object> newObjects, int newIndex)
+        public RecentPlaysUserControl(ObservableCollection<Object> newObjects)
         {
             InitializeComponent();
             oldObjects = newObjects;
@@ -48,7 +51,6 @@ namespace MediaPlayerNameSpace
             personPath = Path.GetFullPath(filename);
             listFileMusic = new List<string>(File.ReadAllLines(personPath));
 
-            personPath = Path.GetFullPath(filename);
             foreach (string line in listFileMusic)
             {
                 string[] temp = line.Split('|');
@@ -77,12 +79,40 @@ namespace MediaPlayerNameSpace
                 musicListView.Items.Add(obj);
             }
 
+            oldObjects = newObjects;
+
             if (MusicsChanged != null)
             {   
-                MusicsChanged.Invoke(newObjects, 0);
-                oldObjects = newObjects;
+                MusicsChanged.Invoke(newObjects);
             }
-            
+
+            MainWindow.IndexChanged += (newIndex) =>
+            {
+                musicListView.SelectedIndex = newIndex;
+            };
+        }
+
+        private void musicListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            int index = musicListView.SelectedIndex;
+            if (IndexChanged != null)
+            {
+                IndexChanged.Invoke(index);
+            }
+        }
+
+        private void MenuRemoveItem_Click(object sender, RoutedEventArgs e)
+        {
+            int index = musicListView.SelectedIndex;
+            musicListView.Items.RemoveAt(index);
+            oldObjects.RemoveAt(index);
+            listFileMusic.RemoveAt(index);
+            if (MusicsChanged != null)
+            {
+                MusicsChanged.Invoke(oldObjects);
+            }
+
+            File.WriteAllLines(personPath, listFileMusic);
         }
     }
 }

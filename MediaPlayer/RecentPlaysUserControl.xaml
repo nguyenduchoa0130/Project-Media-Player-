@@ -19,12 +19,12 @@
             <TextBlock Height="20">Recent plays</TextBlock>
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="1">
-            <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0">
-                <!--<ListView.ContextMenu>
+            <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0" MouseDoubleClick="musicListView_MouseDoubleClick">
+                <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Delete" MenuItem.Click="MenuItem_Click"></MenuItem>
+                        <MenuItem Header="Remove" MenuItem.Click="MenuRemoveItem_Click"></MenuItem>
                     </ContextMenu>
-                </ListView.ContextMenu>-->
+                </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Name" Width="400" DisplayMemberBinding="{Binding Name}"/>

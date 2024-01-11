@@ -32,11 +32,10 @@ namespace MediaPlayerNameSpace
         public ObservableCollection<Object> oldObjects { get; set; }
         public int oldIndex { get; set; }
 
-        public MyMusicUserControl(ObservableCollection<Object> newObjects, int newIndex)
+        public MyMusicUserControl(ObservableCollection<Object> newObjects)
         {
             InitializeComponent();
             oldObjects = newObjects;
-            oldIndex = newIndex;
             this.DataContext = oldObjects;
         }
 
@@ -44,41 +43,38 @@ namespace MediaPlayerNameSpace
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = true;
-            ObservableCollection<Object> newObjects = new ObservableCollection<Object>();
-            //int newIndex;
 
             if (oldObjects != null)
             {
-                newObjects = (ObservableCollection<Object>)oldObjects;
+                oldObjects = (ObservableCollection<Object>)oldObjects;
             }
 
             if (dialog.ShowDialog() == true)
             {
                 foreach (string sFileName in dialog.FileNames)
                 {
-                    newObjects.Add(new Object { Name = Path.GetFileNameWithoutExtension(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
-                    for (int i = 0; i < newObjects.Count; i++)
+                   oldObjects.Add(new Object { Name = Path.GetFileNameWithoutExtension(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
+                    for (int i = 0; i < oldObjects.Count; i++)
                     {
-                        for (int j = i + 1; j < newObjects.Count; j++)
+                        for (int j = i + 1; j < oldObjects.Count; j++)
                         {
-                            if (newObjects[i].Name == newObjects[j].Name)
-                                newObjects.Remove(newObjects[j]);
+                            if (oldObjects[i].Name == oldObjects[j].Name)
+                                oldObjects.Remove(oldObjects[j]);
                         }
                     }
                 }
 
                 musicListView.Items.Clear();
-                foreach (Object obj in newObjects)
+                foreach (Object obj in oldObjects)
                 {
                     musicListView.Items.Add(obj);
                 }
-                musicListView.SelectedIndex = MainWindow._index;
             }
 
             if (MusicsChanged != null)
             {
-                MusicsChanged.Invoke(newObjects);
-                oldObjects = newObjects;
+                MusicsChanged.Invoke(oldObjects);
+                oldObjects = oldObjects;
                 //oldIndex = newIndex;
             }
         }
@@ -92,7 +88,6 @@ namespace MediaPlayerNameSpace
             {
                 MusicsChanged.Invoke(oldObjects);
             }
-            Debug.WriteLine(123);
         }
 
         private void musicListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -103,7 +98,6 @@ namespace MediaPlayerNameSpace
             {
                 IndexChanged.Invoke(oldIndex);
             }
-
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -114,6 +108,12 @@ namespace MediaPlayerNameSpace
                 oldIndex = newIndex;
                 musicListView.SelectedIndex = newIndex;
             };
+
+            musicListView.Items.Clear();
+            foreach (Object obj in oldObjects)
+            {
+                musicListView.Items.Add(obj);
+            }
         }
     }
 }

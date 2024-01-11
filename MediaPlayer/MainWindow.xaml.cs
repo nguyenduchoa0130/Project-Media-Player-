@@ -34,6 +34,7 @@ namespace MediaPlayerNameSpace
         public static event IndexChangedHandler IndexChanged;
 
         public ObservableCollection<Object> Objects  = new ObservableCollection<Object>();
+        public ObservableCollection<Object> PlayLists = new ObservableCollection<Object>();
         public static int _index { get; set; } = -1;
         private bool _playing = false;
 		private bool _shuffle = false;
@@ -41,15 +42,6 @@ namespace MediaPlayerNameSpace
 		private List<string> listFileMusic;
 		string personPath;
         string filename = @"RecentPlays//recentPlaysList.txt";
-        public class Wrapper:INotifyPropertyChanged
-        {
-            public string CurrentTime { get; set; }
-            public string TotalTime { get; set; } 
-
-            public event PropertyChangedEventHandler? PropertyChanged;
-        }
-        Wrapper wrapper;
-
         enum repeatMode
         {
             unrepeat,
@@ -62,8 +54,7 @@ namespace MediaPlayerNameSpace
         public MainWindow()
 		{
 			InitializeComponent();
-           
-        }
+		}
 
 		private void buttonOpenMenu_Click(object sender, RoutedEventArgs e)
 		{
@@ -79,15 +70,63 @@ namespace MediaPlayerNameSpace
 			menuWidth.Width = new GridLength(60);
 		}
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        //public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void listViewMusic(object sender, RoutedEventArgs e, Object file)
+        {
+            Objects.Clear();
+            listFileMusic = new List<string>(File.ReadAllLines($"{file.Dir}{file.Name}{file.Extension}"));
+
+            foreach (string line in listFileMusic)
+            {
+                string[] temp = line.Split('|');
+                if (File.Exists(@$"{temp[0]}{temp[1]}{temp[2]}"))
+                {
+                    Objects.Add(new Object
+                    {
+                        Dir = temp[0],
+                        Name = temp[1],
+                        Extension = temp[2]
+                    });
+                    for (int i = 0; i < Objects.Count; i++)
+                    {
+                        for (int j = i + 1; j < Objects.Count; j++)
+                        {
+                            if (Objects[i].Name == Objects[j].Name)
+                                Objects.Remove(Objects[j]);
+                        }
+                    }
+                }
+            }
+
+            var screen = new MyMusicUserControl(Objects);
+
+            screen.IndexChanged += (newIndex) =>
+            {
+                _index = newIndex;
+                playMusic(sender, e, _index);
+            };
+
+            screen.MusicsChanged += (newObjects) =>
+            {
+                Objects = newObjects;
+            };
+
+            GridMain.Children.Clear();
+            GridMain.Children.Add(screen);
+        }
 
         private void listViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			GridMain.Children.Clear();
-			switch (((ListViewItem)((ListView)sender).SelectedItem).Name)
-			{
-				case "MyMusicItem":
-                    var screen1 = new MyMusicUserControl(Objects, _index);
+            Objects.Clear();
+            _index = -1;
+            myMediaElement.Source = null;
+            updateButton();
+            switch (((ListViewItem)((ListView)sender).SelectedItem).Name)
+            {
+                case "MyMusicItem":
+                    var screen1 = new MyMusicUserControl(Objects);
                     screen1.IndexChanged += (newIndex) =>
                     {
                         _index = newIndex;
@@ -99,24 +138,44 @@ namespace MediaPlayerNameSpace
                         Objects = newObjects;
                     };
 
-                    
+
                     GridMain.Children.Add(screen1);
 
                     break;
-				//case "RecentPlaysItem":
-    //                var screen2 = new RecentPlaysUserControl(newObjects);
-    //                GridMain.Children.Add(screen2);
-    //                screen2.MusicsChanged += (newMusics) =>
-    //                {
-    //                    Objects = newMusics;
-    //                };
+                case "RecentPlaysItem":
+                    var screen2 = new RecentPlaysUserControl(Objects);
+                    screen2.MusicsChanged += (newObjects) =>
+                    {
+                        Objects = newObjects;
+                    };
 
-				//	break;
-				case "PlaylistsItem":
-					GridMain.Children.Add(new PlaylistsUserControl());
+                    screen2.IndexChanged += (newIndex) =>
+                    {
+                        _index = newIndex;
+                        playMusic(sender, e, _index);
+                    };
+
+                    GridMain.Children.Add(screen2);
+
+
+                    break;
+                case "PlaylistsItem":
+                    var screen3 = new PlaylistsUserControl(PlayLists);
+                    screen3.MusicsChanged += (newPlayLists) =>
+                    {
+                        PlayLists = newPlayLists;
+                    };
+                    screen3.IndexChanged += (newIndex) =>
+                    {
+                        _index = newIndex;
+                        var file = PlayLists[_index];
+                        listViewMusic(sender, e, file);
+                    };
+
+                    GridMain.Children.Add(screen3);
 					break;
 				default:
-                    var screen = new MyMusicUserControl(Objects, _index);
+                    var screen = new MyMusicUserControl(Objects);
                     screen.MusicsChanged += (newObjects) =>
                     {
                         Objects = newObjects;
@@ -129,19 +188,11 @@ namespace MediaPlayerNameSpace
                     };
                     GridMain.Children.Add(screen);
                     break;
-
-
             }
         }
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-            wrapper = new Wrapper
-            {
-                CurrentTime = "00:00:00",
-                TotalTime = "00:00:00"
-            };
-            DataContext = wrapper;
             personPath = Path.GetFullPath(filename);
             listFileMusic = new List<string>(File.ReadAllLines(personPath));
 
@@ -155,7 +206,7 @@ namespace MediaPlayerNameSpace
 
 
             GridMain.Children.Clear();
-            var screen = new MyMusicUserControl(Objects, _index);
+            var screen = new MyMusicUserControl(Objects);
             GridMain.Children.Add(screen);
             screen.MusicsChanged += (NewObjects) =>
             {
@@ -166,7 +217,6 @@ namespace MediaPlayerNameSpace
                 _index = newIndex;
                 playMusic(sender, e, _index);
             };
-           
         }
 
         private void updateButton()
@@ -217,8 +267,7 @@ namespace MediaPlayerNameSpace
             int minutes = myMediaElement.Position.Minutes;
             int seconds = myMediaElement.Position.Seconds;
 
-            //currentPosition.Text = $"{hours}:{minutes}:{seconds}";
-            wrapper.CurrentTime = $"{hours}:{minutes}:{seconds}";
+            currentPosition.Text = $"{hours}:{minutes}:{seconds}";
 
             if (myMediaElement.NaturalDuration.HasTimeSpan)
             {
@@ -228,30 +277,33 @@ namespace MediaPlayerNameSpace
 
         private void playMusic(object sender, RoutedEventArgs e, int index)
 		{
-            Object play = Objects[index];
-            myMediaElement.Source = new Uri($"{play.Dir}{play.Name}{play.Extension}");
-            musicName.Text = play.Name;
-
-            if (!listFileMusic.Contains($"{play.Dir}|{play.Name}|{play.Extension}"))
+            if (index >= 0 && index < Objects.Count())
             {
-                listFileMusic.Add($"{play.Dir}|{play.Name}|{play.Extension}");
-                File.AppendAllText(personPath, $"{play.Dir}|{play.Name}|{play.Extension}\n");
-            }
+                Object play = Objects[index];
+                myMediaElement.Source = new Uri($"{play.Dir}{play.Name}{play.Extension}");
+                musicName.Text = play.Name;
 
-            myMediaElement_MediaOpened(sender, e);
-            myMediaElement.Play();
-            _playing = true;
-            _timer = new DispatcherTimer();
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
-            _index = index;
-            
-            if (IndexChanged != null)
-            {
-                IndexChanged.Invoke(_index);
-            }
+                if (!listFileMusic.Contains($"{play.Dir}|{play.Name}|{play.Extension}"))
+                {
+                    listFileMusic.Add($"{play.Dir}|{play.Name}|{play.Extension}");
+                    File.AppendAllText(personPath, $"{play.Dir}|{play.Name}|{play.Extension}\n");
+                }
 
-            updateButton();
+                myMediaElement_MediaOpened(sender, e);
+                myMediaElement.Play();
+                _playing = true;
+                _timer = new DispatcherTimer();
+                _timer.Tick += _timer_Tick;
+                _timer.Start();
+                _index = index;
+
+                if (IndexChanged != null)
+                {
+                    IndexChanged.Invoke(_index);
+                }
+
+                updateButton();
+            }
         }
 
         private void playButton_Click(object sender, RoutedEventArgs e)
@@ -397,8 +449,7 @@ namespace MediaPlayerNameSpace
                 int minutes = myMediaElement.NaturalDuration.TimeSpan.Minutes;
                 int seconds = myMediaElement.NaturalDuration.TimeSpan.Seconds;
 
-                //totalPosition.Text = $"{hours}:{minutes}:{seconds}";
-                wrapper.TotalTime = $"{hours}:{minutes}:{seconds}";
+                totalPosition.Text = $"{hours}:{minutes}:{seconds}";
 
                 progressSlider.Maximum = myMediaElement.NaturalDuration.TimeSpan.TotalSeconds;
             }
