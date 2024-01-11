@@ -78,6 +78,13 @@ namespace MediaPlayerNameSpace
                 oldObjects = oldObjects;
                 //oldIndex = newIndex;
             }
+            
+
+            string path = Path.GetFullPath(@"RecentPlays\\musics.txt");
+            foreach(var obj in oldObjects)
+            {
+                File.AppendAllText(path, $"{obj.Dir}|{obj.Name}|{obj.Extension}\n");
+            }
         }
 
         private void MenuRemoveItem_Click(object sender, RoutedEventArgs e)
