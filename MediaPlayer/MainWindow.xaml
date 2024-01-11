@@ -59,9 +59,8 @@
                     <ListViewItem x:Name="SearchMusicItem" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Search" Height="24" Width="24" Margin="10"/>
-                            <TextBox Name="searchMusic" GotFocus="TextBox_GotFocus" TextChanged="TextBox_TextChanged" Width="100" Height="30" VerticalAlignment="Center" Margin="20 10" Background="Transparent">
+                            <TextBox Name="searchMusic" TextChanged="TextBox_TextChanged" Text="{Binding Keywork}" Width="100" Height="30" VerticalAlignment="Center" Margin="20 10" Background="Transparent">
                             </TextBox>
-                            
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem x:Name="MyMusicItem" Height="60">
@@ -114,6 +113,7 @@
                         <MediaElement Name="myMediaElement"
 										LoadedBehavior="Manual"
                                         MediaOpened="myMediaElement_MediaOpened"
+                                        MediaEnded="myMediaElement_MediaEnded"
 										Width="120"
 										Height="70" />
                         <TextBlock x:Name="musicName" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="5, 0, 0, 0" Text=""></TextBlock>

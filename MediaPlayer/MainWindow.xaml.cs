@@ -23,14 +23,20 @@ using System.Windows.Threading;
 using Path = System.IO.Path;
 using System.Xml.Linq;
 using MaterialDesignThemes.Wpf;
+using System.Diagnostics;
 
 namespace MediaPlayerNameSpace
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
-	{
+	public partial class MainWindow : Window, INotifyPropertyChanged
+    {
+        public string Keywork { get; set; } = "";
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+
         public delegate void IndexChangedHandler(int newIndex);
         public static event IndexChangedHandler IndexChanged;
 
@@ -43,6 +49,8 @@ namespace MediaPlayerNameSpace
 		private List<string> listFileMusic;
 		string personPath;
         string filename = @"RecentPlays//recentPlaysList.txt";
+        public delegate void KeyworkChangedHandler(string newKeywork);
+        public static event KeyworkChangedHandler KeyworkChanged;
         public class Wrapper:INotifyPropertyChanged
         {
             public string CurrentTime { get; set; }
@@ -136,6 +144,60 @@ namespace MediaPlayerNameSpace
             updateButton();
             switch (((ListViewItem)((ListView)sender).SelectedItem).Name)
             {
+                case "SearchMusicItem":
+
+                    string curPath = Path.GetFullPath(@"RecentPlays//musics.txt");
+                    List<string> temp = new List<string>(File.ReadAllLines(curPath));
+
+                    foreach (string line in temp)
+                    {
+                        string[] cur = line.Split('|');
+                        if (File.Exists($@"{cur[0]}{cur[1]}{cur[2]}"))
+                        {
+                            Objects.Add(new Object
+                            {
+                                Dir = cur[0],
+                                Name = cur[1],
+                                Extension = cur[2]
+                            });
+
+                            for (int i = 0; i < Objects.Count; i++)
+                            {
+                                for (int j = i + 1; j < Objects.Count; j++)
+                                {
+                                    if (Objects[i].Name == Objects[j].Name)
+                                    {
+                                        Objects.Remove(Objects[j]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //File.WriteAllText(curPath, "");
+                    List<string> strs = new List<string>();
+                    foreach (var obj in Objects)
+                    {
+                        strs.Add($"{obj.Dir}|{obj.Name}|{obj.Extension}");
+                    }
+                    File.WriteAllLines(curPath, strs);
+
+                    var screen4 = new SearchMusic(Objects, Keywork);
+                    screen4.MusicsChanged += (newObjects) =>
+                    {
+                        Objects = newObjects;
+                    };
+
+                    screen4.IndexChanged += (newIndex) =>
+                    {
+                        _index = newIndex;
+                        playMusic(sender, e, _index);
+                    };
+
+                    GridMain.Children.Add(screen4);
+
+
+                    break;
                 case "MyMusicItem":
                     var screen1 = new MyMusicUserControl(Objects);
                     screen1.IndexChanged += (newIndex) =>
@@ -238,7 +300,7 @@ namespace MediaPlayerNameSpace
                 _index = newIndex;
                 playMusic(sender, e, _index);
             };
-           
+            //this.DataContext = this;
         }
 
         private void updateButton()
@@ -378,23 +440,30 @@ namespace MediaPlayerNameSpace
 
         private void skipNextButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_shuffle == true)
+            if (_index >= 0 && _index < Objects.Count)
             {
-                shuffleMode(sender, e);
+                if (_shuffle == true)
+                {
+                    shuffleMode(sender, e);
+                }
+                else
+                {
+                    int index = _index;
+                    index += 1;
+                    if (repeat == (int)repeatMode.repeatall)
+                    {
+                        index %= Objects.Count;
+                    }
+                    else if (repeat == (int)repeatMode.repeatone)
+                    {
+                        index -= 1;
+                    }
+                    playMusic(sender, e, index);
+                }
             }
             else
             {
-                int index = _index;
-                index += 1;
-                if (repeat == (int)repeatMode.repeatall)
-                {
-                    index %= Objects.Count;
-                }
-                else if (repeat == (int)repeatMode.repeatone)
-                {
-                    index -= 1;
-                }
-                playMusic(sender, e, index);
+                _index = Objects.Count - 1;
             }
         }
 
@@ -487,14 +556,18 @@ namespace MediaPlayerNameSpace
             //GridMain.Children.Add(myMediaElement);
         }
 
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Keywork = searchMusic.Text;
+            if (KeyworkChanged != null)
+            {
+                KeyworkChanged.Invoke(Keywork);
+            }
+        }
 
+        private void myMediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            skipNextButton_Click(sender, e);
         }
     }
 }

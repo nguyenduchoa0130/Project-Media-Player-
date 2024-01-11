@@ -38,7 +38,6 @@ namespace MediaPlayerNameSpace
         {
             InitializeComponent();
             oldObjects = newObjects;
-            //this.DataContext = oldObjects;
         }
 
         private void addMusicFile_Click(object sender, RoutedEventArgs e)

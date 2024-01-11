@@ -76,6 +76,7 @@ namespace MediaPlayerNameSpace
                         }
                     }
                 }
+                this.DataContext = oldObjects;
             }
 
             playListListView.Items.Clear();
@@ -92,7 +93,21 @@ namespace MediaPlayerNameSpace
 
         private void newPlayList_Click(object sender, RoutedEventArgs e)
         {
+            var screen = new NewPlayListWindow { WindowStartupLocation = WindowStartupLocation.CenterScreen };
+            var result = screen.ShowDialog();
 
+            if (result == true)
+            {
+                var personPath = Path.GetFullPath("PlayList");
+                string file = $"{personPath}\\{screen.playList}.txt";
+                oldObjects.Add(new Object
+                {
+                    Name = screen.playList,
+                    Dir = $"{personPath}\\",
+                    Extension = ".txt"
+                });
+                File.Create(file);
+            }
         }
 
         private void playListListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -106,7 +121,13 @@ namespace MediaPlayerNameSpace
 
         private void MenuRemoveItem_Click(object sender, RoutedEventArgs e)
         {
-
+            int index = playListListView.SelectedIndex;
+            var file = oldObjects[index];
+            if (File.Exists($@"{file.Dir}{file.Name}{file.Extension}"))
+            {
+                File.Delete($@"{file.Dir}{file.Name}{file.Extension}");
+                oldObjects.RemoveAt(index);
+            }
         }
     }
 }
