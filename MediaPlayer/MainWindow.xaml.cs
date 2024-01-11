@@ -22,7 +22,7 @@ using System.Threading;
 using System.Windows.Threading;
 using Path = System.IO.Path;
 using System.Xml.Linq;
-
+using MaterialDesignThemes.Wpf;
 
 namespace MediaPlayerNameSpace
 {
@@ -485,6 +485,16 @@ namespace MediaPlayerNameSpace
             //this.RemoveLogicalChild(myMediaElement);
             //this.RemoveVisualChild(myMediaElement);
             //GridMain.Children.Add(myMediaElement);
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

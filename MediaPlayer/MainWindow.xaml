@@ -59,7 +59,9 @@
                     <ListViewItem x:Name="SearchMusicItem" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Search" Height="24" Width="24" Margin="10"/>
-                            <TextBox Text="Search" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBox Name="searchMusic" GotFocus="TextBox_GotFocus" TextChanged="TextBox_TextChanged" Width="100" Height="30" VerticalAlignment="Center" Margin="20 10" Background="Transparent">
+                            </TextBox>
+                            
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem x:Name="MyMusicItem" Height="60">
