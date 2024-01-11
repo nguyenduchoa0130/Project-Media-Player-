@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MediaPlayerNameSpace
 {
-    public class Object : INotifyPropertyChanged, ICloneable
+    public class MediaPlayerName : INotifyPropertyChanged, ICloneable
     {
         private string name = "";
         private string dir = "";

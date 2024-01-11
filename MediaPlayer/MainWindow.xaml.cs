@@ -40,8 +40,8 @@ namespace MediaPlayerNameSpace
         public delegate void IndexChangedHandler(int newIndex);
         public static event IndexChangedHandler IndexChanged;
 
-        public ObservableCollection<Object> Objects  = new ObservableCollection<Object>();
-        public ObservableCollection<Object> PlayLists = new ObservableCollection<Object>();
+        public ObservableCollection<MediaPlayerName> Objects  = new ObservableCollection<MediaPlayerName>();
+        public ObservableCollection<MediaPlayerName> PlayLists = new ObservableCollection<MediaPlayerName>();
         public static int _index { get; set; } = -1;
         private bool _playing = false;
 		private bool _shuffle = false;
@@ -91,7 +91,7 @@ namespace MediaPlayerNameSpace
 
         //public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void listViewMusic(object sender, RoutedEventArgs e, Object file)
+        public void listViewMusic(object sender, RoutedEventArgs e, MediaPlayerName file)
         {
             Objects.Clear();
             listFileMusic = new List<string>(File.ReadAllLines($"{file.Dir}{file.Name}{file.Extension}"));
@@ -101,7 +101,7 @@ namespace MediaPlayerNameSpace
                 string[] temp = line.Split('|');
                 if (File.Exists(@$"{temp[0]}{temp[1]}{temp[2]}"))
                 {
-                    Objects.Add(new Object
+                    Objects.Add(new MediaPlayerName
                     {
                         Dir = temp[0],
                         Name = temp[1],
@@ -145,7 +145,7 @@ namespace MediaPlayerNameSpace
                 string[] cur = line.Split('|');
                 if (File.Exists($@"{cur[0]}{cur[1]}{cur[2]}"))
                 {
-                    Objects.Add(new Object
+                    Objects.Add(new MediaPlayerName
                     {
                         Dir = cur[0],
                         Name = cur[1],
@@ -372,7 +372,7 @@ namespace MediaPlayerNameSpace
 		{
             if (index >= 0 && index < Objects.Count())
             {
-                Object play = Objects[index];
+                MediaPlayerName play = Objects[index];
                 myMediaElement.Source = new Uri($"{play.Dir}{play.Name}{play.Extension}");
                 musicName.Text = play.Name;
 

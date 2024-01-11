@@ -23,19 +23,19 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class SearchMusic
     {
-        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects);
+        public delegate void MusicChangedHandler(ObservableCollection<MediaPlayerName> newObjects);
         public delegate void indexChangedHandler(int oldIndex);
 
         public event MusicChangedHandler MusicsChanged;
         public event indexChangedHandler IndexChanged;
-        public ObservableCollection<Object> oldObjects { get; set; }
-        public ObservableCollection<Object> Objects { get; set; }
-        public ObservableCollection<Object> playList = new ObservableCollection<Object>();
+        public ObservableCollection<MediaPlayerName> oldObjects { get; set; }
+        public ObservableCollection<MediaPlayerName> Objects { get; set; }
+        public ObservableCollection<MediaPlayerName> playList = new ObservableCollection<MediaPlayerName>();
         public int oldIndex { get; set; }
 
         public string oldKeywork { get; set; }
 
-        public SearchMusic(ObservableCollection<Object> newObjects, string newKeywork)
+        public SearchMusic(ObservableCollection<MediaPlayerName> newObjects, string newKeywork)
         {
             InitializeComponent();
             oldObjects = newObjects;
@@ -47,7 +47,7 @@ namespace MediaPlayerNameSpace
 
         void UpdateObjects()
         {
-            var _subItems = new ObservableCollection<Object>(Objects.Where(music => music.Name.Contains(oldKeywork)).ToList());
+            var _subItems = new ObservableCollection<MediaPlayerName>(Objects.Where(music => music.Name.Contains(oldKeywork)).ToList());
 
             oldObjects = _subItems;
 

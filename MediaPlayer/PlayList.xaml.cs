@@ -24,7 +24,7 @@ namespace MediaPlayerNameSpace
     public partial class PlayListSelect : Window
     {
 
-        public List<Object> playList = new List<Object>();
+        public List<MediaPlayerName> playList = new List<MediaPlayerName>();
         
         public PlayListSelect()
         {
@@ -56,7 +56,7 @@ namespace MediaPlayerNameSpace
             foreach (var file in files)
             {
                 if (!File.Exists(file.FullName)) continue;
-                playList.Add(new Object
+                playList.Add(new MediaPlayerName
                 {
                     Name = Path.GetFileNameWithoutExtension(file.FullName),
                     Dir = Path.GetDirectoryName(file.FullName) + "\\",

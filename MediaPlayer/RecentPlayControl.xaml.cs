@@ -27,7 +27,7 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class RecentPlaysUserControl 
     {
-        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects);
+        public delegate void MusicChangedHandler(ObservableCollection<MediaPlayerName> newObjects);
         public delegate void indexChangedHandler(int oldIndex);
 
         public event MusicChangedHandler MusicsChanged;
@@ -36,9 +36,9 @@ namespace MediaPlayerNameSpace
         string filename = @"RecentPlays//recentPlaysList.txt";
         string personPath;
         List<string> listFileMusic;
-        ObservableCollection<Object> oldObjects { get; set; }
+        ObservableCollection<MediaPlayerName> oldObjects { get; set; }
 
-        public RecentPlaysUserControl(ObservableCollection<Object> newObjects)
+        public RecentPlaysUserControl(ObservableCollection<MediaPlayerName> newObjects)
         {
             InitializeComponent();
             oldObjects = newObjects;
@@ -46,7 +46,7 @@ namespace MediaPlayerNameSpace
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ObservableCollection<Object> newObjects = new ObservableCollection<Object>();
+            ObservableCollection<MediaPlayerName> newObjects = new ObservableCollection<MediaPlayerName>();
 
             personPath = Path.GetFullPath(filename);
             listFileMusic = new List<string>(File.ReadAllLines(personPath));
@@ -56,7 +56,7 @@ namespace MediaPlayerNameSpace
                 string[] temp = line.Split('|');
                 if (File.Exists(@$"{temp[0]}{temp[1]}{temp[2]}"))
                 {
-                    newObjects.Add(new Object
+                    newObjects.Add(new MediaPlayerName
                     {
                         Dir = temp[0],
                         Name = temp[1],
@@ -74,7 +74,7 @@ namespace MediaPlayerNameSpace
             }
 
             musicListView.Items.Clear();
-            foreach (Object obj in newObjects)
+            foreach (MediaPlayerName obj in newObjects)
             {
                 musicListView.Items.Add(obj);
             }

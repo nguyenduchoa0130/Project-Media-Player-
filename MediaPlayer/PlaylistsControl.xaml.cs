@@ -29,7 +29,7 @@ namespace MediaPlayerNameSpace
     /// </summary>
     public partial class PlaylistsUserControl
     {
-        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects);
+        public delegate void MusicChangedHandler(ObservableCollection<MediaPlayerName> newObjects);
         public delegate void indexChangedHandler(int oldIndex);
 
         public event MusicChangedHandler MusicsChanged;
@@ -39,9 +39,9 @@ namespace MediaPlayerNameSpace
         string personPath;
         List<string> listFileMusic;
 
-        public ObservableCollection<Object> oldObjects { get; set; }  
+        public ObservableCollection<MediaPlayerName> oldObjects { get; set; }  
 
-        public PlaylistsUserControl(ObservableCollection<Object> newObjects)
+        public PlaylistsUserControl(ObservableCollection<MediaPlayerName> newObjects)
         {
             InitializeComponent();
             oldObjects = newObjects;
@@ -59,7 +59,7 @@ namespace MediaPlayerNameSpace
             {
                 //Debug.WriteLine($"{file}");
                 if (!File.Exists(file.FullName)) continue;
-                oldObjects.Add(new Object
+                oldObjects.Add(new MediaPlayerName
                 {
                     Name = Path.GetFileNameWithoutExtension(file.FullName),
                     Dir = Path.GetDirectoryName(file.FullName) + "\\",
@@ -80,7 +80,7 @@ namespace MediaPlayerNameSpace
             }
 
             playListListView.Items.Clear();
-            foreach (Object obj in oldObjects)
+            foreach (MediaPlayerName obj in oldObjects)
             {
                 playListListView.Items.Add(obj);
             }
@@ -100,7 +100,7 @@ namespace MediaPlayerNameSpace
             {
                 var personPath = Path.GetFullPath("PlayList");
                 string file = $"{personPath}\\{screen.playList}.txt";
-                oldObjects.Add(new Object
+                oldObjects.Add(new MediaPlayerName
                 {
                     Name = screen.playList,
                     Dir = $"{personPath}\\",

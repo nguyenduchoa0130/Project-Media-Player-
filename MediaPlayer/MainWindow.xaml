@@ -24,7 +24,7 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:0" Value="60"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        <local:ZeroToDoubleZeroConverter x:Key="TimeConverter"/>
+        <local:HandleConverted x:Key="TimeConverter"/>
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="buttonOpenMenu">

@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace MediaPlayerNameSpace
 {
-    public  class ZeroToDoubleZeroConverter : IValueConverter
+    public  class HandleConverted : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

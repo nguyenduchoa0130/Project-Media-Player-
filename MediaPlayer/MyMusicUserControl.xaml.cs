@@ -24,17 +24,17 @@ namespace MediaPlayerNameSpace
     public partial class MyMusicUserControl
     {
 
-        public delegate void MusicChangedHandler(ObservableCollection<Object> newObjects);
+        public delegate void MusicChangedHandler(ObservableCollection<MediaPlayerName> newObjects);
         public delegate void indexChangedHandler(int oldIndex);
 
         public event MusicChangedHandler MusicsChanged;
         public event indexChangedHandler IndexChanged;
-        public ObservableCollection<Object> oldObjects { get; set; }
+        public ObservableCollection<MediaPlayerName> oldObjects { get; set; }
 
-        public ObservableCollection<Object> playList = new ObservableCollection<Object>();
+        public ObservableCollection<MediaPlayerName> playList = new ObservableCollection<MediaPlayerName>();
         public int oldIndex { get; set; }
 
-        public MyMusicUserControl(ObservableCollection<Object> newObjects)
+        public MyMusicUserControl(ObservableCollection<MediaPlayerName> newObjects)
         {
             InitializeComponent();
             oldObjects = newObjects;
@@ -47,14 +47,14 @@ namespace MediaPlayerNameSpace
 
             if (oldObjects != null)
             {
-                oldObjects = (ObservableCollection<Object>)oldObjects;
+                oldObjects = (ObservableCollection<MediaPlayerName>)oldObjects;
             }
 
             if (dialog.ShowDialog() == true)
             {
                 foreach (string sFileName in dialog.FileNames)
                 {
-                   oldObjects.Add(new Object { Name = Path.GetFileNameWithoutExtension(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
+                   oldObjects.Add(new MediaPlayerName { Name = Path.GetFileNameWithoutExtension(sFileName), Dir = Path.GetDirectoryName(sFileName) + "\\", Extension = Path.GetExtension(sFileName) });
                     for (int i = 0; i < oldObjects.Count; i++)
                     {
                         for (int j = i + 1; j < oldObjects.Count; j++)
@@ -66,7 +66,7 @@ namespace MediaPlayerNameSpace
                 }
 
                 musicListView.Items.Clear();
-                foreach (Object obj in oldObjects)
+                foreach (MediaPlayerName obj in oldObjects)
                 {
                     musicListView.Items.Add(obj);
                 }
@@ -118,7 +118,7 @@ namespace MediaPlayerNameSpace
             };
 
             musicListView.Items.Clear();
-            foreach (Object obj in oldObjects)
+            foreach (MediaPlayerName obj in oldObjects)
             {
                 musicListView.Items.Add(obj);
             }
