@@ -22,13 +22,17 @@
         <DockPanel Grid.Column="0" Grid.Row="1">
             <ListView x:Name="musicListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0" SelectedIndex="{Binding Path=oldIndex}" MouseDoubleClick="musicListView_MouseDoubleClick">
                 <ListView.ContextMenu>
-                    <ContextMenu>
+                    <ContextMenu DataContext="{Binding PlayList}">
                         <MenuItem Header="Remove" MenuItem.Click="MenuRemoveItem_Click"/>
+                        <MenuItem Header="Add">
+                            <MenuItem Header="New play list" MenuItem.Click="NewPlayListMenuItem_Click"/>
+                            <MenuItem Header="Current play list" MenuItem.Click="CurrentPlayListMenuItem_Click_1"/>
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name, Mode=TwoWay}"/>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

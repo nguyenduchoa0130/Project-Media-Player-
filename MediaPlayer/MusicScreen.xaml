@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="MediaPlayerNameSpace.MusicScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MediaPlayerNameSpace"
+             mc:Ignorable="d" 
+             d:DesignHeight="432.839" d:DesignWidth="824.788"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" Loaded="UserControl_Loaded">
+    <Grid>
+        <MediaElement Name="myMediaElement" LoadedBehavior="Manual" MediaOpened="myMediaElement_MediaOpened"/>
+    </Grid>
+</UserControl>

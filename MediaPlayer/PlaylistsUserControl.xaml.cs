@@ -50,7 +50,7 @@ namespace MediaPlayerNameSpace
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             personPath = Path.GetFullPath(filename);
-            Debug.WriteLine(personPath);
+            //Debug.WriteLine(personPath);
             DirectoryInfo di = new DirectoryInfo(filename);
             
             FileInfo[] files = di.GetFiles("*.txt"); ;

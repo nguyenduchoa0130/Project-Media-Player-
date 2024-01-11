@@ -114,5 +114,45 @@ namespace MediaPlayerNameSpace
 
             File.WriteAllLines(personPath, listFileMusic);
         }
+
+        private void NewPlayListMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            int index = musicListView.SelectedIndex;
+            var select = oldObjects[index];
+            var screen = new NewPlayListWindow { WindowStartupLocation = WindowStartupLocation.CenterScreen };
+            var result = screen.ShowDialog();
+
+            if (result == true)
+            {
+                var personPath = Path.GetFullPath("PlayList");
+                string file = $"{personPath}\\{screen.playList}.txt";
+                string music = $"{select.Dir}|{select.Name}|{select.Extension}";
+                //File.Create(file);
+                File.WriteAllText(file, music);
+            }
+            else
+            {
+
+            }
+        }
+
+        private void CurrentPlayListMenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            int index = musicListView.SelectedIndex;
+            var select = oldObjects[index];
+            var screen = new PlayListSelect { WindowStartupLocation = WindowStartupLocation.CenterScreen };
+            var result = screen.ShowDialog();
+
+            if (result == true)
+            {
+                var playList = screen.playListSelect;
+                string music = $"{select.Dir}|{select.Name}|{select.Extension}";
+                File.WriteAllTextAsync(playList, music);
+            }
+            else
+            {
+
+            }
+        }
     }
 }

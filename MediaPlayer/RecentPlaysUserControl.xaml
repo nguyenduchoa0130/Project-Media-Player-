@@ -23,6 +23,10 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Remove" MenuItem.Click="MenuRemoveItem_Click"></MenuItem>
+                        <MenuItem Header="Add">
+                            <MenuItem Header="New play list" MenuItem.Click="NewPlayListMenuItem_Click"/>
+                            <MenuItem Header="Current play list" MenuItem.Click="CurrentPlayListMenuItem_Click_1"/>
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>

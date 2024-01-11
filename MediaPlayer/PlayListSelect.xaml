@@ -1,0 +1,21 @@
+﻿<Window x:Class="MediaPlayerNameSpace.PlayListSelect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:MediaPlayerNameSpace"
+        mc:Ignorable="d" 
+        d:DesignHeight="432.839" d:DesignWidth="824.788"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="PlayListSelect" Height="150" Width="200" Loaded="Window_Loaded">
+    <StackPanel>
+        <Label>Play list name</Label>
+        <ComboBox Name="categoriesComboBox" Width="100" Height="35" DisplayMemberPath="Name">
+           
+        </ComboBox>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="okButton" Content="Lưu" IsDefault="True" Width="60" Height="35" Margin="10" Click="okButton_Click" />
+            <Button Name="cancelButton" Content="Huỷ" IsCancel="True" Width="60" Height="35" Margin="10"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
