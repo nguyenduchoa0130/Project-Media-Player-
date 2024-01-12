@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:MediaPlayerNameSpace"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-         
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -17,8 +16,8 @@
             <RowDefinition Height = "*" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Column="0" Grid.Row="0" >
-            <TextBlock Height="20">Play list</TextBlock>
-            <Button x:Name="newPlayList" Click="newPlayList_Click" Content="New Playlist" Height="40" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignRaisedLightButton}" />
+            <TextBlock Height="20">Danh mục</TextBlock>
+            <Button x:Name="newPlayList" Click="newPlayList_Click" Content="Thêm danh mục" Height="40" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignRaisedLightButton}" Background="#FF9B4DE0" />
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="1">
             <ListView x:Name="playListListView" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10, 0, 0, 0" SelectedIndex="{Binding Path=oldIndex}" MouseDoubleClick="playListListView_MouseDoubleClick">
@@ -29,7 +28,7 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="PlayList" DisplayMemberBinding="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <GridViewColumn Header="Danh mục" DisplayMemberBinding="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

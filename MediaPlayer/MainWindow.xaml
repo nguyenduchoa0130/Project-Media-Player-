@@ -11,7 +11,7 @@
 
 
     <Window.Resources>
-        
+
         <Storyboard x:Key="OpenMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
                 <EasingDoubleKeyFrame KeyTime="0" Value="60"/>
@@ -44,11 +44,18 @@
             <RowDefinition Height = "*" />
             <RowDefinition Height="130"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Column="1" x:Name="GridMain" Grid.ColumnSpan="2"></Grid>
+        <Grid Grid.Column="1" x:Name="GridMain" Grid.ColumnSpan="2">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#A4FFDB00" Offset="0.988"/>
+                    <GradientStop Color="Black" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
         <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#130c1c">
             <StackPanel>
-                <Grid Height="60" Background="White" RenderTransformOrigin="0.5,0.5">
-                    <Button x:Name="buttonOpenMenu" Height="60" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Gray" Click="buttonOpenMenu_Click">
+                <Grid Height="60" RenderTransformOrigin="0.5,0.5">
+                    <Button x:Name="buttonOpenMenu" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" BorderBrush="{x:Null}" Foreground="Gray" Click="buttonOpenMenu_Click" Background="{x:Null}">
                         <materialDesign:PackIcon Kind="Menu" Width="24" Height="24" VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="buttonCloseMenu" Visibility="Collapsed" Height="60" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Background="{x:Null}" BorderBrush="{x:Null}"  Foreground="Gray" Click="buttonCloseMenu_Click">
@@ -66,20 +73,20 @@
                     <ListViewItem x:Name="MyMusicItem" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Music" Height="24" Width="24" Margin="10"/>
-                            <TextBlock Text="My music" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Nhạc của tui" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem x:Name="RecentPlaysItem" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="ClockOutline" Height="24" Width="24" Margin="10"/>
-                            <TextBlock Text="Recent plays" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Gần đây" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                     <Separator Background="White" Height="10" />
                     <ListViewItem x:Name="PlaylistsItem" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="PlaylistMusic" Height="24" Width="24" Margin="10"/>
-                            <TextBlock Text="Playlists" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Danh mục" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                 </ListView>
@@ -87,6 +94,12 @@
         </Grid>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
             <Grid Height="30">
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FF130C1C" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="*"/>
@@ -103,6 +116,12 @@
                 <TextBlock Grid.Column="2" Name="totalPosition" Text="{Binding TotalTime,Converter={StaticResource TimeConverter}}" HorizontalAlignment="Center" Margin="0,7,0,7"/>
             </Grid>
             <Grid x:Name="GridElement">
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FF130C1C" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>

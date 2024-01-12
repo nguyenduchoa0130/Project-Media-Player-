@@ -7,15 +7,15 @@
         mc:Ignorable="d" 
         d:DesignHeight="432.839" d:DesignWidth="824.788"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="PlayListSelect" Height="150" Width="200" Loaded="Window_Loaded">
+        Title="Chọn danh mục" Height="150" Width="200" Loaded="Window_Loaded">
     <StackPanel>
-        <Label>Play list name</Label>
+        <Label>Tên danh mục</Label>
         <ComboBox Name="categoriesComboBox" Width="100" Height="35" DisplayMemberPath="Name">
            
         </ComboBox>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Name="okButton" Content="Lưu" IsDefault="True" Width="60" Height="35" Margin="10" Click="okButton_Click" />
-            <Button Name="cancelButton" Content="Huỷ" IsCancel="True" Width="60" Height="35" Margin="10"/>
+            <Button Name="cancelButton" Content="Huỷ" IsCancel="True" Width="60" Height="35" Margin="10" Background="#FFD40000"/>
         </StackPanel>
     </StackPanel>
 </Window>

@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MediaPlayerNameSpace"
         mc:Ignorable="d"
-        Title="NewPlayList" Height="150"  Width="200">
+        Title="Danh mục mới" Height="150"  Width="200">
     <StackPanel>
-        <Label>Play list name</Label>
+        <Label>Tên danh mục</Label>
         <TextBox Name="dataTextBox" Width="150" Height="35"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="okButton" Content="Lưu" IsDefault="True" Width="60" Height="35" Margin="10" Click="okButton_Click" />
-            <Button Name="cancelButton" Content="Huỷ" IsCancel="True" Width="60" Height="35" Margin="10"/>
+            <Button Name="okButton" Content="Lưu" IsDefault="True" Width="60" Height="35" Margin="10" Click="okButton_Click" Background="#FF229E11" />
+            <Button Name="cancelButton" Content="Huỷ" IsCancel="True" Width="60" Height="35" Margin="10" Background="#FFD40A00"/>
         </StackPanel>
     </StackPanel>
 </Window>
