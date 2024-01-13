@@ -119,7 +119,7 @@
                 <Grid.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="Black"/>
-                        <GradientStop Color="#FF130C1C" Offset="1"/>
+                        <GradientStop Color="#4CC845D3" Offset="0"/>
                     </LinearGradientBrush>
                 </Grid.Background>
                 <Grid.ColumnDefinitions>
@@ -128,7 +128,7 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="BtnTemp" Height="90" Background="Transparent" BorderBrush="Transparent">
-                    <StackPanel Width="auto" Grid.Column="0" Orientation="Horizontal">
+                    <StackPanel Width="auto" Grid.Column="0" Orientation="Horizontal" Background="#fff">
                         <MediaElement Name="myMediaElement"
 										LoadedBehavior="Manual"
                                         MediaOpened="myMediaElement_MediaOpened"
@@ -139,6 +139,12 @@
                     </StackPanel>
                 </Button>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black"/>
+                            <GradientStop Color="#FF4B4B9F" Offset="0"/>
+                        </LinearGradientBrush>
+                    </StackPanel.Background>
                     <Button
 						IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
 						Style="{StaticResource MaterialDesignIconButton}"
@@ -175,7 +181,7 @@
 						Style="{StaticResource MaterialDesignIconButton}"
 						ToolTip="MaterialDesignIconButton"
 						x:Name="skipNextButton"
-                        Click="skipNextButton_Click">
+                        Click="skipNextButton_Click" Background="{x:Null}">
                         <materialDesign:PackIcon Kind="SkipNext" />
                     </Button>
                     <Button
